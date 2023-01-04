@@ -6,9 +6,11 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
-import surval.screens.MainMenuScreen;
+import surval.screens.*;
 
 public class Main extends Game {
+	public static LoadAssets AssetsData; // Класс ассетов.
+
 	@Override // Функция вызывается один раз при запуске приложения:
 	public void create() {
 		// Настройка окна:
@@ -17,6 +19,14 @@ public class Main extends Game {
 		Gdx.graphics.setForegroundFPS(60); // Установить FPS.
 		Gdx.graphics.setVSync(false);      // Вертикальная синхронизация.
 
-		setScreen(new MainMenuScreen()); // Переключиться на другой скрин.
+		AssetsData = new LoadAssets(); // Создать экземпляр класса.
+		AssetsData.AssetsLoad();       // Загрузить ассеты.
+
+		setScreen(new GameScreen()); // Переключиться на другой скрин.
+	}
+
+	@Override // Функция вызывается один раз при закрытии приложения:
+	public void dispose() {
+		AssetsData.AssetsDispose();
 	}
 }

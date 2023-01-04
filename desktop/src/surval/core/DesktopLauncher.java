@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-		config.setWindowIcon(Files.FileType.Internal, "icons/icon.png"); // Установить иконку окна (кроме MacOS).
+		config.setWindowIcon(Files.FileType.Internal, "sprites/icons/icon.png"); // Установить иконку окна (кроме MacOS).
 		config.setWindowedMode(960, 540); // Установить размер окна.
 
 		new Lwjgl3Application(new Main(), config); // Применить конфигурацию.

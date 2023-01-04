@@ -1,31 +1,50 @@
 //
-// Этот код реализует основное меню игры.
+// Этот код реализует игру.
 // Этот код - первое на что переключается первичный код игры (surval.core.Main).
 //
 
 package surval.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.utils.*;
+import surval.core.*;
 
-public class MainMenuScreen implements Screen {
+public class GameScreen implements Screen {
     // Прочие поля:
+    private SpriteBatch batch;         // Партия спрайтов для отрисовки.
     private OrthographicCamera camera; // Камера 2D.
+    private LoadAssets AssetsData;     // Ассеты.
 
 
 
     @Override // Функция вызывается один раз при переключении на этот скрин:
     public void show() {
+        batch = new SpriteBatch();
+
+
         // Создать камеру:
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(0, 0, 0);
+
+
+        AssetsData = Main.AssetsData; // Сохранить ассеты.
     }
 
     @Override // Функция вызывается FPS-количество раз в секунду:
     public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
+        camera.update();                              // Обновить камеру.
+        batch.setProjectionMatrix(camera.combined);   // Использовать систему координат, указанную камерой.
 
+        // Отрисовка спрайтов:
+        batch.begin();
+
+        batch.draw(AssetsData.snow.get(0), 0f, 0f);
+
+        batch.end();
     }
 
     @Override // Функция вызывается при изменении размера окна:
@@ -53,5 +72,6 @@ public class MainMenuScreen implements Screen {
     @Override // Функция вызывается при закрытии приложения:
     public void dispose() {
         // Пропишите всё что использует ОЗУ.
+        AssetsData.AssetsDispose();
     }
 }
