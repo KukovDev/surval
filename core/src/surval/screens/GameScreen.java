@@ -8,6 +8,7 @@ package surval.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import surval.core.*;
 
@@ -16,6 +17,9 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;         // Партия спрайтов для отрисовки.
     private OrthographicCamera camera; // Камера 2D.
     private LoadAssets AssetsData;     // Ассеты.
+    private Vector2 CameraTarget;      // Цель за которой будет следить камера.
+    private float DeltaTime = 1;       // Дельта времени.
+    private World world;               // Карта.
 
 
 
@@ -23,26 +27,44 @@ public class GameScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
 
-
         // Создать камеру:
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0, 0, 0);
-
+        CameraTarget = new Vector2(0, 0);
 
         AssetsData = Main.AssetsData; // Сохранить ассеты.
+
+        world = new World(512, 512);
+        world.Generate();
     }
 
     @Override // Функция вызывается FPS-количество раз в секунду:
     public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
-        camera.update();                              // Обновить камеру.
+
+        // Получение дельты:
+        if((float)Main.FPS/Gdx.graphics.getFramesPerSecond() != Double.POSITIVE_INFINITY)
+            DeltaTime = (float)Main.FPS / Gdx.graphics.getFramesPerSecond();
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
+            CameraTarget.y += 10 * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.A))
+            CameraTarget.x -= 10 * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.S))
+            CameraTarget.y -= 10 * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.D))
+            CameraTarget.x += 10 * DeltaTime;
+
+
+        CameraUpdate();                               // Обновить камеру.
+        Gdx.graphics.setTitle("FPS: " + Gdx.graphics.getFramesPerSecond());
         batch.setProjectionMatrix(camera.combined);   // Использовать систему координат, указанную камерой.
 
         // Отрисовка спрайтов:
         batch.begin();
 
         batch.draw(AssetsData.snow.get(0), 0f, 0f);
+        world.Draw(batch, camera); // Отрисовка карты.
 
         batch.end();
     }
@@ -73,5 +95,16 @@ public class GameScreen implements Screen {
     public void dispose() {
         // Пропишите всё что использует ОЗУ.
         AssetsData.AssetsDispose();
+    }
+
+    // Функция обновления камеры:
+    void CameraUpdate() {
+        float CameraMoveSpeed = 0.05f; // Скорость передвижения камеры.
+
+        camera.update();
+
+        // Плавное перемещение камеры к цели:
+        camera.position.x += ((CameraTarget.x - camera.position.x) * CameraMoveSpeed) * DeltaTime;
+        camera.position.y += ((CameraTarget.y - camera.position.y) * CameraMoveSpeed) * DeltaTime;
     }
 }

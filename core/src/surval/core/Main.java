@@ -10,14 +10,15 @@ import surval.screens.*;
 
 public class Main extends Game {
 	public static LoadAssets AssetsData; // Класс ассетов.
+	public static final int FPS = 60;    // Установленный FPS.
 
 	@Override // Функция вызывается один раз при запуске приложения:
 	public void create() {
 		// Настройка окна:
-		Gdx.graphics.setTitle("surval");   // Заголовок окна.
-		Gdx.graphics.setResizable(true);   // Масштабируемость окна.
-		Gdx.graphics.setForegroundFPS(60); // Установить FPS.
-		Gdx.graphics.setVSync(false);      // Вертикальная синхронизация.
+		Gdx.graphics.setTitle("surval");    // Заголовок окна.
+		Gdx.graphics.setResizable(true);    // Масштабируемость окна.
+		Gdx.graphics.setForegroundFPS(FPS); // Установить FPS.
+		Gdx.graphics.setVSync(false);       // Вертикальная синхронизация.
 
 		AssetsData = new LoadAssets(); // Создать экземпляр класса.
 		AssetsData.AssetsLoad();       // Загрузить ассеты.
