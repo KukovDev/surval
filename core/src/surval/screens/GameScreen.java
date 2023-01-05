@@ -14,12 +14,13 @@ import surval.core.*;
 
 public class GameScreen implements Screen {
     // Прочие поля:
-    private SpriteBatch batch;         // Партия спрайтов для отрисовки.
-    private OrthographicCamera camera; // Камера 2D.
-    private LoadAssets AssetsData;     // Ассеты.
-    private Vector2 CameraTarget;      // Цель за которой будет следить камера.
-    private float DeltaTime = 1;       // Дельта времени.
-    private World world;               // Карта.
+    private SpriteBatch batch;           // Партия спрайтов для отрисовки.
+    private LoadAssets AssetsData;       // Ассеты.
+    private OrthographicCamera camera;   // Камера 2D.
+    private Vector2 CameraTarget;        // Цель за которой будет следить камера.
+    private float CameraZoomTarget = 1f; // Цель зума камеры. Это поле, текущего (не плавного) зума.
+    private float DeltaTime = 1;         // Дельта времени.
+    private World world;                 // Карта.
 
 
 
@@ -34,38 +35,44 @@ public class GameScreen implements Screen {
 
         AssetsData = Main.AssetsData; // Сохранить ассеты.
 
-        world = new World(512, 512);
+        world = new World(1024, 1024);
         world.Generate();
     }
 
+    // Тут вся логика:
+    public void Update() {
+        // Вывести текущий FPS в заголовок окна:
+        Gdx.graphics.setTitle("FPS: " + Main.GetFPS() + " | " +
+                              "Map-Size: W-" + world.Width + " H-" + world.Height + " | " +
+                              "Camera-Zoom: " + camera.zoom);
+
+        // Получение дельты:
+        if((float)Main.FPS / Main.GetFPS() != Double.POSITIVE_INFINITY)
+            DeltaTime = (float)Main.FPS / Main.GetFPS();
+
+        // Передвигать камеру:
+        float CameraSpeed = 10f;
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
+            CameraTarget.y += CameraSpeed * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.A))
+            CameraTarget.x -= CameraSpeed * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.S))
+            CameraTarget.y -= CameraSpeed * DeltaTime;
+        if(Gdx.input.isKeyPressed(Input.Keys.D))
+            CameraTarget.x += CameraSpeed * DeltaTime;
+    }
+
+    // Тут всё что должно отрисовываться:
     @Override // Функция вызывается FPS-количество раз в секунду:
     public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
-
-        // Получение дельты:
-        if((float)Main.FPS/Gdx.graphics.getFramesPerSecond() != Double.POSITIVE_INFINITY)
-            DeltaTime = (float)Main.FPS / Gdx.graphics.getFramesPerSecond();
-
-        if(Gdx.input.isKeyPressed(Input.Keys.W))
-            CameraTarget.y += 10 * DeltaTime;
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
-            CameraTarget.x -= 10 * DeltaTime;
-        if(Gdx.input.isKeyPressed(Input.Keys.S))
-            CameraTarget.y -= 10 * DeltaTime;
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
-            CameraTarget.x += 10 * DeltaTime;
-
-
+        Update();                                     // Обновление основной логики.
         CameraUpdate();                               // Обновить камеру.
-        Gdx.graphics.setTitle("FPS: " + Gdx.graphics.getFramesPerSecond());
         batch.setProjectionMatrix(camera.combined);   // Использовать систему координат, указанную камерой.
 
         // Отрисовка спрайтов:
         batch.begin();
-
-        batch.draw(AssetsData.snow.get(0), 0f, 0f);
         world.Draw(batch, camera); // Отрисовка карты.
-
         batch.end();
     }
 
@@ -100,11 +107,24 @@ public class GameScreen implements Screen {
     // Функция обновления камеры:
     void CameraUpdate() {
         float CameraMoveSpeed = 0.05f; // Скорость передвижения камеры.
-
-        camera.update();
+        float CameraZoomSpeed = 0.1f;  // Скорость зума камеры.
+        float CameraZoomMin = 0.5f;    // Максимальное приближение.
+        float CameraZoomMax = 4f;      // Минимальное отдаление.
 
         // Плавное перемещение камеры к цели:
         camera.position.x += ((CameraTarget.x - camera.position.x) * CameraMoveSpeed) * DeltaTime;
         camera.position.y += ((CameraTarget.y - camera.position.y) * CameraMoveSpeed) * DeltaTime;
+
+        // Зум камеры:
+        CameraZoomTarget += Main.GetMouseScroll() / 6;
+        camera.zoom += ((CameraZoomTarget - camera.zoom) * CameraZoomSpeed) * DeltaTime;
+
+        // Установить ограничение масштабирования камеры:
+        if(camera.zoom < CameraZoomMin) { camera.zoom = CameraZoomMin; }
+        if(camera.zoom > CameraZoomMax) { camera.zoom = CameraZoomMax; }
+        if(CameraZoomTarget < CameraZoomMin) { CameraZoomTarget = CameraZoomMin; }
+        if(CameraZoomTarget > CameraZoomMax) { CameraZoomTarget = CameraZoomMax; }
+
+        camera.update();
     }
 }

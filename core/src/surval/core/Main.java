@@ -1,6 +1,7 @@
 //
 // Этот код является стартовой точкой этого приложения.
 // Этот код настраивает окно и переключается на один из скринов.
+// Так же этот код содержит прочие полезные функции.
 //
 
 package surval.core;
@@ -14,6 +15,8 @@ public class Main extends Game {
 
 	@Override // Функция вызывается один раз при запуске приложения:
 	public void create() {
+		Gdx.input.setInputProcessor(new InputDesktop()); // Сделать класс InputDesktop() основным обработчиком ввода.
+
 		// Настройка окна:
 		Gdx.graphics.setTitle("surval");    // Заголовок окна.
 		Gdx.graphics.setResizable(true);    // Масштабируемость окна.
@@ -29,5 +32,17 @@ public class Main extends Game {
 	@Override // Функция вызывается один раз при закрытии приложения:
 	public void dispose() {
 		AssetsData.AssetsDispose();
+	}
+
+	// Функция для получения текущего FPS:
+	public static int GetFPS() {
+		return Gdx.graphics.getFramesPerSecond();
+	}
+
+	// Функция для получения скролла мыши на PC:
+	public static float GetMouseScroll() {
+		float scroll = InputDesktop.scroll;
+		InputDesktop.scroll = 0f;
+		return scroll;
 	}
 }
