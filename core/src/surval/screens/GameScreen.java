@@ -109,14 +109,14 @@ public class GameScreen implements Screen {
         float CameraMoveSpeed = 0.05f; // Скорость передвижения камеры.
         float CameraZoomSpeed = 0.1f;  // Скорость зума камеры.
         float CameraZoomMin = 0.5f;    // Максимальное приближение.
-        float CameraZoomMax = 4f;      // Минимальное отдаление.
+        float CameraZoomMax = 2f;      // Минимальное отдаление.
 
         // Плавное перемещение камеры к цели:
         camera.position.x += ((CameraTarget.x - camera.position.x) * CameraMoveSpeed) * DeltaTime;
         camera.position.y += ((CameraTarget.y - camera.position.y) * CameraMoveSpeed) * DeltaTime;
 
         // Зум камеры:
-        CameraZoomTarget += Main.GetMouseScroll() / 6;
+        CameraZoomTarget += Main.GetScroll() / 6;
         camera.zoom += ((CameraZoomTarget - camera.zoom) * CameraZoomSpeed) * DeltaTime;
 
         // Установить ограничение масштабирования камеры:

@@ -7,6 +7,7 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.input.GestureDetector;
 import surval.screens.*;
 
 public class Main extends Game {
@@ -15,7 +16,10 @@ public class Main extends Game {
 
 	@Override // Функция вызывается один раз при запуске приложения:
 	public void create() {
-		Gdx.input.setInputProcessor(new InputDesktop()); // Сделать класс InputDesktop() основным обработчиком ввода.
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(new InputProcess());
+		multiplexer.addProcessor(new GestureDetector(new GestureHandler()));
+		Gdx.input.setInputProcessor(multiplexer);
 
 		// Настройка окна:
 		Gdx.graphics.setTitle("surval");    // Заголовок окна.
@@ -39,10 +43,23 @@ public class Main extends Game {
 		return Gdx.graphics.getFramesPerSecond();
 	}
 
+	public static boolean IsTouchDrag() {
+		boolean istouchdrag = InputProcess.touchdrag;
+		InputProcess.touchdrag = false;
+		return istouchdrag;
+	}
+
 	// Функция для получения скролла мыши на PC:
-	public static float GetMouseScroll() {
-		float scroll = InputDesktop.scroll;
-		InputDesktop.scroll = 0f;
+	public static float GetScroll() { // TODO функция на мобильных устройствах работает не корректно.
+		float scroll = InputProcess.scroll;
+		if(scroll != 0f) InputProcess.scroll = 0f;
+		else {
+			if(Gdx.input.isTouched(0) && Gdx.input.isTouched(1) && IsTouchDrag()) {
+				if(GestureHandler.zoomdist < GestureHandler.oldzoomdist)      { scroll = 1f; }
+				else if(GestureHandler.zoomdist > GestureHandler.oldzoomdist) { scroll = -1f; }
+				else                                                          { scroll = 0f;  }
+			}
+		}
 		return scroll;
 	}
 }

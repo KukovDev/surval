@@ -1,9 +1,14 @@
+//
+// Этот код реализует поддержку ввода.
+//
+
 package surval.core;
 
 import com.badlogic.gdx.*;
 
-public class InputDesktop implements InputProcessor {
+public class InputProcess implements InputProcessor {
     public static float scroll;
+    public static boolean touchdrag;
 
     @Override
     public boolean keyDown (int keycode) {
@@ -32,6 +37,7 @@ public class InputDesktop implements InputProcessor {
 
     @Override
     public boolean touchDragged (int x, int y, int pointer) {
+        touchdrag = true;
         return false;
     }
 
