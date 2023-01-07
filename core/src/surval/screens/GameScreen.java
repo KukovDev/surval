@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
         world.Generate();
 
         alives = new ArrayList<>();
-        alives.add(new Player(new Vector2((world.Width/2f)*world.BlockSize, (world.Height/2f)*world.BlockSize)));
+        alives.add(new Player(new Vector2((world.Width)*world.BlockSize, (world.Height)*world.BlockSize)));
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
     }
 
@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
         Gdx.graphics.setTitle("FPS: " + Main.GetFPS() + " | " +
                               "Map-Size: W-" + world.Width + " H-" + world.Height + " | " +
                               "Camera-Zoom: " + camera.zoom + " | " +
-                              "Delta-Time: " + DeltaTime);
+                              "Hover-Tile: " + world.GetHoverTile(camera));
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {

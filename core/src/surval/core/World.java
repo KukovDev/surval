@@ -4,6 +4,7 @@
 
 package surval.core;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
@@ -61,5 +62,36 @@ public class World {
                 BlockUpdate(x, y, batch, camera);
             }
         }
+    }
+
+    // Получение позиции заведения на карте:
+    public Vector2 GetHoverTile(OrthographicCamera camera) {
+        // Суть такова:
+        // Вы должны сначала получить позицию карты на экране,
+        // добавить позицию мыши/пальца умноженную на зум,
+        // и всё это вместе взятое поделить целочисленно на размер ячейки (блока 1x1).
+
+        Vector2 hovertile = new Vector2();
+        int MapPosX   = (int) -(camera.position.x - (camera.viewportWidth  * camera.zoom) / 2); // Позиция карты на экране по ширине.
+        int MapPosY   = (int) -(camera.position.y - (camera.viewportHeight * camera.zoom) / 2); // Позиция карты на экране по высоте.
+        int TouchPosX = (int)  (Gdx.input.getX() * camera.zoom);                                // Позиция мыши/пальца по ширине.
+        int TouchPosY = (int)  (-(Gdx.input.getY() - camera.viewportHeight) * camera.zoom);     // Позиция мыши/пальца по высоте.
+
+        hovertile.x = (float)-(MapPosX-TouchPosX)/BlockSize; // Получить наведение на карте по ширине.
+        hovertile.y = (float)-(MapPosY-TouchPosY)/BlockSize; // Получить наведение на карте по высоте.
+
+        // Если наведение меньше 0:
+        if(hovertile.x < 0) hovertile.x = -1;
+        if(hovertile.y < 0) hovertile.y = -1;
+
+        // Если наведение больше размеров карты:
+        if(hovertile.x >= Width)  hovertile.x = Width;
+        if(hovertile.y >= Height) hovertile.y = Height;
+
+        // Округлить:
+        hovertile.x = (int)hovertile.x;
+        hovertile.y = (int)hovertile.y;
+
+        return hovertile;
     }
 }
