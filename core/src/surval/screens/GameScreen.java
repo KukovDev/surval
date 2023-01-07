@@ -50,14 +50,14 @@ public class GameScreen implements Screen {
     public void Update() {
         Gdx.graphics.setTitle("FPS: " + Main.GetFPS() + " | " +
                               "Map-Size: W-" + world.Width + " H-" + world.Height + " | " +
-                              "Camera-Zoom: " + camera.zoom + " | ");
+                              "Camera-Zoom: " + camera.zoom + " | " +
+                              "Delta-Time: " + DeltaTime);
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {
             alive.Update(DeltaTime);
-            if(Objects.equals(alive.ID, AliveType.Player)) {
+            if(Objects.equals(alive.ID, AliveType.Player))
                 CameraTarget = alive.Pos; // Передвигать камеру.
-            }
         }
     }
 
@@ -67,8 +67,7 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
 
         // Получение дельты:
-        if((float)Main.FPS / Main.GetFPS() != Double.POSITIVE_INFINITY)
-            DeltaTime = (float)Main.FPS / Main.GetFPS();
+        DeltaTime = Gdx.graphics.getDeltaTime() * 60; // Изменяя последнее число, можно менять скорость протекания процессов в игре.
 
         Update();                                     // Обновление основной логики.
         CameraUpdate();                               // Обновить камеру.

@@ -4,12 +4,11 @@
 
 package surval.alives;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
-import surval.core.Main;
+import surval.core.*;
 
 public class Player extends Alive {
     public Texture stand;
@@ -38,7 +37,7 @@ public class Player extends Alive {
 
     // Функция обновления существа:
     public void Update(float DeltaTime) {
-        // Управление:
+        // Управление: // TODO сделать поддержку сенсорного экрана:
         if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             Pos.y += Speed * DeltaTime;
         }

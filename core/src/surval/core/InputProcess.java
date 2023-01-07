@@ -5,6 +5,7 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.math.Vector2;
 
 public class InputProcess implements InputProcessor {
     public static float scroll;
