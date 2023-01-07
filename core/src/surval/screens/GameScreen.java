@@ -49,9 +49,7 @@ public class GameScreen implements Screen {
     // Тут вся логика:
     public void Update() {
         Gdx.graphics.setTitle("FPS: " + Main.GetFPS() + " | " +
-                              "Map-Size: W-" + world.Width + " H-" + world.Height + " | " +
-                              "Camera-Zoom: " + camera.zoom + " | " +
-                              "Hover-Tile: " + world.GetHoverTile(camera));
+                              "Map-Size: W-" + world.Width + " H-" + world.Height);
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {

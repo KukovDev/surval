@@ -24,7 +24,7 @@ public class Player extends Alive {
         run = new Texture[] {Main.AssetsData.Player.get(1), Main.AssetsData.Player.get(2)};
 
         HP = 100;               // Очки здоровья.
-        Speed = 10f;            // Скорость передвижения.
+        Speed = 8f;             // Скорость передвижения.
         Width = 160;            // Ширина текстуры.
         Height = 160;           // Высота текстуры.
         AnimSpeed = 0.15f;      // Скорость анимации.
