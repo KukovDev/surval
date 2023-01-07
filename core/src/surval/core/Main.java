@@ -14,8 +14,7 @@ public class Main extends Game {
 	public static LoadAssets AssetsData; // Класс ассетов.
 	public static final int FPS = 60;    // Установленный FPS.
 
-	@Override // Функция вызывается один раз при запуске приложения:
-	public void create() {
+	@Override public void create() {
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(new InputProcess());
 		multiplexer.addProcessor(new GestureDetector(new GestureHandler()));
@@ -33,8 +32,7 @@ public class Main extends Game {
 		setScreen(new GameScreen()); // Переключиться на другой скрин.
 	}
 
-	@Override // Функция вызывается один раз при закрытии приложения:
-	public void dispose() {
+	@Override public void dispose() {
 		AssetsData.AssetsDispose();
 	}
 

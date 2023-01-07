@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import java.util.*;
 import surval.alives.*;
+import surval.blocks.*;
 import surval.core.*;
 
 public class GameScreen implements Screen {
@@ -27,8 +28,7 @@ public class GameScreen implements Screen {
 
 
 
-    @Override // Функция вызывается один раз при переключении на этот скрин:
-    public void show() {
+    @Override public void show() {
         batch = new SpriteBatch();
 
         // Создать камеру:
@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
         world.Generate();
 
         alives = new ArrayList<>();
-        alives.add(new Player(new Vector2((world.Width)*world.BlockSize, (world.Height)*world.BlockSize)));
+        alives.add(new Player(new Vector2((world.Width)*world.BlockSize/2f, (world.Height)*world.BlockSize/2f)));
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
     }
 
@@ -59,11 +59,27 @@ public class GameScreen implements Screen {
             if(Objects.equals(alive.ID, AliveType.Player))
                 CameraTarget = alive.Pos; // Передвигать камеру.
         }
+
+        // TODO переделать -> перенести в отдельный обработчик работы с блоками и сделать поддержку сенсорного экрана:
+        // Установить блок правой кнопкой мыши:
+        if(InputProcess.touchdownbutton == Input.Buttons.LEFT) {
+            Vector2 hoverpos = new Vector2(world.GetHoverTile(camera));
+            Block block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
+            if(!Objects.equals(world.BlockList[(int) hoverpos.x][(int) hoverpos.y].ID, block.ID)) {
+                world.SetBlock(block, hoverpos);
+            }
+        }
+        // Установить блок правой левой мыши:
+        if(InputProcess.touchdownbutton == Input.Buttons.RIGHT) {
+            Vector2 hoverpos = new Vector2(world.GetHoverTile(camera));
+            if(world.BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
+                world.BreakBlock(hoverpos);
+            }
+        }
     }
 
     // Тут всё что должно отрисовываться:
-    @Override
-    public void render(float delta) {
+    @Override public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
 
         // Получение дельты:
@@ -75,7 +91,7 @@ public class GameScreen implements Screen {
 
         // Отрисовка спрайтов:
         batch.begin();
-        world.Draw(batch, camera); // Отрисовка карты.
+        world.Draw(batch, camera, DeltaTime); // Отрисовка карты.
 
         // Проходиться по существам и отрисовывать их:
         for(Alive alive : alives) {
@@ -85,30 +101,25 @@ public class GameScreen implements Screen {
         batch.end();
     }
 
-    @Override // Функция вызывается при изменении размера окна:
-    public void resize(int width, int height) {
+    @Override public void resize(int width, int height) {
         // Обновить разрешение камеры:
         camera.viewportWidth = width; camera.viewportHeight = height;
         camera.update();
     }
 
-    @Override // Функция вызывается при расфокусировке этого приложения:
-    public void pause() {
+    @Override public void pause() {
         // Какой-то код.
     }
 
-    @Override // Функция вызывается при фокусировке на это приложение:
-    public void resume() {
+    @Override public void resume() {
         // Какой-то код.
     }
 
-    @Override // Функция вызывается один раз при переключении на другой скрин:
-    public void hide() {
+    @Override public void hide() {
         // Какой-то код.
     }
 
-    @Override // Функция вызывается при закрытии приложения:
-    public void dispose() {
+    @Override public void dispose() {
         // Пропишите всё что использует ОЗУ.
         AssetsData.AssetsDispose();
     }

@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 public class InputProcess implements InputProcessor {
     public static float scroll;
     public static boolean touchdrag;
+    public static Vector2 touchdown = new Vector2();
+    public static int touchdownbutton = -1;
 
     @Override
     public boolean keyDown (int keycode) {
@@ -28,11 +30,14 @@ public class InputProcess implements InputProcessor {
 
     @Override
     public boolean touchDown (int x, int y, int pointer, int button) {
+        touchdown.x = x; touchdown.y = y;
+        touchdownbutton = button;
         return false;
     }
 
     @Override
     public boolean touchUp (int x, int y, int pointer, int button) {
+        touchdownbutton = -1;
         return false;
     }
 

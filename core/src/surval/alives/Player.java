@@ -14,7 +14,6 @@ public class Player extends Alive {
     public Texture stand;
     public Texture[] run;
     private boolean IsFlip;
-    private Texture CurrentTexture;
     private float AnimStep;
     float AnimSpeed;
     int AnimFrames;
@@ -26,13 +25,12 @@ public class Player extends Alive {
 
         HP = 100;               // Очки здоровья.
         Speed = 10f;            // Скорость передвижения.
-        Width = 192;            // Ширина текстуры.
-        Height = 192;           // Высота текстуры.
+        Width = 160;            // Ширина текстуры.
+        Height = 160;           // Высота текстуры.
         AnimSpeed = 0.15f;      // Скорость анимации.
         AnimFrames = 2;         // Кол-во спрайтов анимации.
         IsFlip = false;         // Отразить текстуру?
         ID = AliveType.Player;  // Айди существа -> Игрок.
-        CurrentTexture = stand; // Текущая текстура.
     }
 
     // Функция обновления существа:
@@ -63,20 +61,21 @@ public class Player extends Alive {
            !Gdx.input.isKeyPressed(Input.Keys.LEFT) &&
            !Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
            !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            CurrentTexture = stand;
+            AnimStep = 0f;
         } else { // Если нажимаются, то анимировать:
-            CurrentTexture = run[(int)AnimStep];
             AnimStep += AnimSpeed * DeltaTime;
-            if(AnimStep >= AnimFrames) AnimStep = 0f;
+            if(AnimStep >= AnimFrames+1) AnimStep = 1f;
         }
     }
 
     // Функция отрисовки существа:
     public void Draw(SpriteBatch batch) {
         if(IsFlip) {
-            batch.draw(CurrentTexture, Pos.x-Width/2f+Width, Pos.y-Height/2f, -Width, Height);
+            batch.draw(Main.AssetsData.Player.get((int)AnimStep),
+                    Pos.x-Width/2f+Width, Pos.y-Height/2f, -Width, Height);
         } else {
-            batch.draw(CurrentTexture, Pos.x-Width/2f, Pos.y-Height/2f, Width, Height);
+            batch.draw(Main.AssetsData.Player.get((int)AnimStep),
+                    Pos.x-Width/2f, Pos.y-Height/2f, Width, Height);
         }
     }
 }
