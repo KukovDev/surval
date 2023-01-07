@@ -9,16 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import surval.core.Main;
 
 public class NullBlock extends Block {
-    public Texture texture;
-
     public NullBlock(int PosX, int PosY) {
-        this.PosX = PosX;
-        this.PosY = PosY;
+        Pos.x = PosX; Pos.y = PosY;
         ID = "nullblock";
-        texture = Main.AssetsData.nullblock;
     }
 
-    public void Draw(SpriteBatch batch, int BlockPosX, int BlockPosY, int BlockSize) {
-        batch.draw(texture, BlockPosX, BlockPosY, BlockSize, BlockSize);
+    public void Draw(SpriteBatch batch, int BlockSize) {
+        batch.draw(Main.AssetsData.NullBlock, Pos.x * BlockSize, Pos.y * BlockSize, BlockSize, BlockSize);
     }
 }

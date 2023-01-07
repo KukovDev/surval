@@ -9,27 +9,53 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.*;
 
 public class LoadAssets {
-    // Прочие поля:
-    public Array<Texture> snow;
-    public Array<Texture> bonfire;
-    public Texture nullblock;
+    // Блоки:
+    public Array<Texture> Snow;    // Снежная поверхность.
+    public Array<Texture> Stone;   // Каменная поверхность.
+    public Array<Texture> Bonfire; // Костёр.
+    public Texture NullBlock;      // Неизвестно.
 
+    // Живые существа:
+    public Array<Texture> Player; // Игрок.
 
 
     // Функция вызывается автоматически при создании экземпляра этого класса:
     public LoadAssets() {
-        snow = new Array<>();
-        bonfire = new Array<>();
+        // Блоки:
+        Snow = new Array<>();
+        Stone = new Array<>();
+        Bonfire = new Array<>();
+
+        // Живые существа:
+        Player = new Array<>();
     }
 
     // Загружает ассеты:
     public void AssetsLoad() {
-        snow.addAll(
+        LoadBlocks();
+        LoadAlives();
+    }
+
+    // Удаляет всё что было загружено:
+    public void AssetsDispose() {
+        Snow = ArrayTextureDispose(Snow);
+        Stone = ArrayTextureDispose(Stone);
+        Bonfire = ArrayTextureDispose(Bonfire);
+    }
+
+    // Загрузить текстуры блоков:
+    void LoadBlocks() {
+       Snow.addAll(
                 LoadTexture("sprites/blocks/env/snow1.png"),
                 LoadTexture("sprites/blocks/env/snow2.png"),
                 LoadTexture("sprites/blocks/env/snow3.png"));
 
-        bonfire.addAll(
+       Stone.addAll(
+                LoadTexture("sprites/blocks/env/stone1.png"),
+                LoadTexture("sprites/blocks/env/stone2.png"),
+                LoadTexture("sprites/blocks/env/stone3.png"));
+
+       Bonfire.addAll(
                 LoadTexture("sprites/blocks/bonfire/bonfire1.png"),
                 LoadTexture("sprites/blocks/bonfire/bonfire2.png"),
                 LoadTexture("sprites/blocks/bonfire/bonfire3.png"),
@@ -41,13 +67,15 @@ public class LoadAssets {
                 LoadTexture("sprites/blocks/bonfire/bonfire new.png"),
                 LoadTexture("sprites/blocks/bonfire/bonfire out.png"));
 
-        nullblock = LoadTexture("sprites/blocks/env/nullblock.png");
+       NullBlock = LoadTexture("sprites/blocks/env/nullblock.png");
     }
 
-    // Удаляет всё что было загружено:
-    public void AssetsDispose() {
-        snow = ArrayTextureDispose(snow);
-        bonfire = ArrayTextureDispose(bonfire);
+    // Загрузка живых существ:
+    void LoadAlives() {
+        Player.addAll(
+                LoadTexture("sprites/alives/player/stand.png"),
+                LoadTexture("sprites/alives/player/run1.png"),
+                LoadTexture("sprites/alives/player/run2.png"));
     }
 
     // Удаляет все текстуры из переданного в него списка текстур:

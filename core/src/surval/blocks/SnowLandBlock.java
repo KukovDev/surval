@@ -12,13 +12,12 @@ public class SnowLandBlock extends Block {
     public Texture texture;
 
     public SnowLandBlock(int PosX, int PosY) {
-        this.PosX = PosX;
-        this.PosY = PosY;
+        Pos.x = PosX; Pos.y = PosY;
         ID = "snowland";
-        texture = Main.AssetsData.snow.get((int)(Math.random()*3));
+        texture = Main.AssetsData.Snow.get((int)(Math.random()*3));
     }
 
-    public void Draw(SpriteBatch batch, int BlockPosX, int BlockPosY, int BlockSize) {
-        batch.draw(texture, BlockPosX, BlockPosY, BlockSize, BlockSize);
+    public void Draw(SpriteBatch batch, int BlockSize) {
+        batch.draw(texture, Pos.x * BlockSize, Pos.y * BlockSize, BlockSize, BlockSize);
     }
 }

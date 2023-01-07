@@ -49,15 +49,15 @@ public class Main extends Game {
 		return istouchdrag;
 	}
 
-	// Функция для получения скролла мыши на PC:
-	public static float GetScroll() { // TODO функция на мобильных устройствах работает не корректно.
+	// Функция для получения скролла на PC и мобильных устройствах:
+	public static float GetScroll() { // TODO функция на мобильных устройствах может работать не корректно.
 		float scroll = InputProcess.scroll;
 		if(scroll != 0f) InputProcess.scroll = 0f;
 		else {
 			if(Gdx.input.isTouched(0) && Gdx.input.isTouched(1) && IsTouchDrag()) {
-				if(GestureHandler.zoomdist < GestureHandler.oldzoomdist)      { scroll = 1f; }
+				if(GestureHandler.zoomdist < GestureHandler.oldzoomdist) { scroll = 1f; }
 				else if(GestureHandler.zoomdist > GestureHandler.oldzoomdist) { scroll = -1f; }
-				else                                                          { scroll = 0f;  }
+				else { scroll = 0f;  }
 			}
 		}
 		return scroll;

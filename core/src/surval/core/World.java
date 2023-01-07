@@ -42,7 +42,6 @@ public class World {
         int BlockPosX = x*BlockSize;
         int BlockPosY = y*BlockSize;
 
-        // TODO Это можно оптимизировать. Сделаю когда нибудь не сейчас :)
         // Проверка на то, видит ли камера, блок:
         Rectangle BlockRect = new Rectangle(BlockPosX, BlockPosY, BlockSize, BlockSize); // Rect блока.
         Rectangle CameraRect = new Rectangle( // Rect камеры с учётом масштабирования камеры:
@@ -51,7 +50,7 @@ public class World {
                 camera.viewportWidth * camera.zoom, camera.viewportHeight * camera.zoom);
 
         if(BlockRect.overlaps(CameraRect)) {
-            BlockList.get(x).get(y).Draw(batch, BlockPosX, BlockPosY, BlockSize);
+            BlockList.get(x).get(y).Draw(batch, BlockSize);
         }
     }
 
