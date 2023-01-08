@@ -5,22 +5,34 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.*;
 
 public class LoadAssets {
+    // Атлас блоков:
+    public TextureAtlas blocks_atlas;
+
+    // Атлас живых существ:
+    public TextureAtlas alives_atlas;
+
     // Блоки:
-    public Array<Texture> Snow;    // Снежная поверхность.
-    public Array<Texture> Stone;   // Каменная поверхность.
-    public Array<Texture> Bonfire; // Костёр.
-    public Texture NullBlock;      // Неизвестно.
+    public Array<Sprite> Snow;    // Снежная поверхность.
+    public Array<Sprite> Stone;   // Каменная поверхность.
+    public Array<Sprite> Bonfire; // Костёр.
+    public Sprite NullBlock;      // Неизвестно.
 
     // Живые существа:
-    public Array<Texture> Player; // Игрок.
+    public Array<Sprite> Player; // Игрок.
 
 
     // Функция вызывается автоматически при создании экземпляра этого класса:
     public LoadAssets() {
+        // Атлас блоков:
+        blocks_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/blocks.atlas"));
+
+        // Атлас живых существ:
+        alives_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/alives.atlas"));
+
         // Блоки:
         Snow = new Array<>();
         Stone = new Array<>();
@@ -38,57 +50,49 @@ public class LoadAssets {
 
     // Удаляет всё что было загружено:
     public void AssetsDispose() {
-        Snow = ArrayTextureDispose(Snow);
-        Stone = ArrayTextureDispose(Stone);
-        Bonfire = ArrayTextureDispose(Bonfire);
+        blocks_atlas.dispose();
+        alives_atlas.dispose();
+
+        Snow.clear();
+        Stone.clear();
+        Bonfire.clear();
+        Player.clear();
+
+        System.gc();
     }
 
     // Загрузить текстуры блоков:
     void LoadBlocks() {
        Snow.addAll(
-                LoadTexture("sprites/blocks/env/snow1.png"),
-                LoadTexture("sprites/blocks/env/snow2.png"),
-                LoadTexture("sprites/blocks/env/snow3.png"));
+               blocks_atlas.createSprite("snow1"),
+               blocks_atlas.createSprite("snow2"),
+               blocks_atlas.createSprite("snow3"));
 
        Stone.addAll(
-                LoadTexture("sprites/blocks/env/stone1.png"),
-                LoadTexture("sprites/blocks/env/stone2.png"),
-                LoadTexture("sprites/blocks/env/stone3.png"));
+               blocks_atlas.createSprite("stone1"),
+               blocks_atlas.createSprite("stone2"),
+               blocks_atlas.createSprite("stone3"));
 
        Bonfire.addAll(
-                LoadTexture("sprites/blocks/bonfire/bonfire1.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire2.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire3.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire4.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire5.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire6.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire7.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire8.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire new.png"),
-                LoadTexture("sprites/blocks/bonfire/bonfire out.png"));
+               blocks_atlas.createSprite("bonfire1"),
+               blocks_atlas.createSprite("bonfire2"),
+               blocks_atlas.createSprite("bonfire3"),
+               blocks_atlas.createSprite("bonfire4"),
+               blocks_atlas.createSprite("bonfire5"),
+               blocks_atlas.createSprite("bonfire6"),
+               blocks_atlas.createSprite("bonfire7"),
+               blocks_atlas.createSprite("bonfire8"),
+               blocks_atlas.createSprite("bonfire new"),
+               blocks_atlas.createSprite("bonfire old"));
 
-       NullBlock = LoadTexture("sprites/blocks/env/nullblock.png");
+       NullBlock = blocks_atlas.createSprite("nullblock");
     }
 
     // Загрузка живых существ:
     void LoadAlives() {
         Player.addAll(
-                LoadTexture("sprites/alives/player/stand.png"),
-                LoadTexture("sprites/alives/player/run1.png"),
-                LoadTexture("sprites/alives/player/run2.png"));
-    }
-
-    // Удаляет все текстуры из переданного в него списка текстур:
-    Array<Texture> ArrayTextureDispose(Array<Texture> list) {
-        // Функция проходится по списку и удаляет текстуру:
-        for(Texture texture : list) {
-            texture.dispose();
-        } list.clear();
-        return list;
-    }
-
-    // Загружает и возвращает текстуру:
-    Texture LoadTexture(String path) {
-        return new Texture(Gdx.files.internal(path));
+                alives_atlas.createSprite("stand"),
+                alives_atlas.createSprite("run1"),
+                alives_atlas.createSprite("run2"));
     }
 }

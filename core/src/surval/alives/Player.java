@@ -5,14 +5,13 @@
 package surval.alives;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
 import surval.core.*;
 
 public class Player extends Alive {
-    public Texture stand;
-    public Texture[] run;
+    public Sprite stand;
+    public Sprite[] run;
     private boolean IsFlip;
     private float AnimStep;
     float AnimSpeed;
@@ -21,16 +20,16 @@ public class Player extends Alive {
     public Player(Vector2 Pos) {
         this.Pos = Pos;
         stand = Main.AssetsData.Player.get(0);
-        run = new Texture[] {Main.AssetsData.Player.get(1), Main.AssetsData.Player.get(2)};
+        run = new Sprite[] { Main.AssetsData.Player.get(1), Main.AssetsData.Player.get(2) };
 
-        HP = 100;               // Очки здоровья.
-        Speed = 8f;             // Скорость передвижения.
-        Width = 160;            // Ширина текстуры.
-        Height = 160;           // Высота текстуры.
-        AnimSpeed = 0.15f;      // Скорость анимации.
-        AnimFrames = 2;         // Кол-во спрайтов анимации.
-        IsFlip = false;         // Отразить текстуру?
-        ID = AliveType.Player;  // Айди существа -> Игрок.
+        HP = 100;          // Очки здоровья.
+        Speed = 8f;        // Скорость передвижения.
+        Width = 160;       // Ширина текстуры.
+        Height = 160;      // Высота текстуры.
+        AnimSpeed = 0.15f; // Скорость анимации.
+        AnimFrames = 2;    // Кол-во спрайтов анимации.
+        IsFlip = false;    // Отразить текстуру?
+        ID = "player";     // Айди существа -> Игрок.
     }
 
     // Функция обновления существа:
@@ -53,18 +52,28 @@ public class Player extends Alive {
 
         // Анимация:
         // Если ни одна клавиша не нажимается то установить текстуру:
-        if(!Gdx.input.isKeyPressed(Input.Keys.W) &&
-           !Gdx.input.isKeyPressed(Input.Keys.A) &&
-           !Gdx.input.isKeyPressed(Input.Keys.S) &&
-           !Gdx.input.isKeyPressed(Input.Keys.D) &&
-           !Gdx.input.isKeyPressed(Input.Keys.UP) &&
-           !Gdx.input.isKeyPressed(Input.Keys.LEFT) &&
-           !Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
+        if(!Gdx.input.isKeyPressed(Input.Keys.W)     &&
+           !Gdx.input.isKeyPressed(Input.Keys.A)     &&
+           !Gdx.input.isKeyPressed(Input.Keys.S)     &&
+           !Gdx.input.isKeyPressed(Input.Keys.D)     &&
+           !Gdx.input.isKeyPressed(Input.Keys.UP)    &&
+           !Gdx.input.isKeyPressed(Input.Keys.LEFT)  &&
+           !Gdx.input.isKeyPressed(Input.Keys.DOWN)  &&
            !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             AnimStep = 0f;
         } else { // Если нажимаются, то анимировать:
-            AnimStep += AnimSpeed * DeltaTime;
-            if(AnimStep >= AnimFrames+1) AnimStep = 1f;
+            // Проверка на нажатие противоположных направлений:
+            if(!(Gdx.input.isKeyPressed(Input.Keys.W)    && Gdx.input.isKeyPressed(Input.Keys.S))     &&
+               !(Gdx.input.isKeyPressed(Input.Keys.A)    && Gdx.input.isKeyPressed(Input.Keys.D))     &&
+               !(Gdx.input.isKeyPressed(Input.Keys.UP)   && Gdx.input.isKeyPressed(Input.Keys.DOWN))  &&
+               !(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) &&
+               !(Gdx.input.isKeyPressed(Input.Keys.W)    && Gdx.input.isKeyPressed(Input.Keys.DOWN))  &&
+               !(Gdx.input.isKeyPressed(Input.Keys.S)    && Gdx.input.isKeyPressed(Input.Keys.UP))    &&
+               !(Gdx.input.isKeyPressed(Input.Keys.A)    && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) &&
+               !(Gdx.input.isKeyPressed(Input.Keys.D)    && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
+                AnimStep += AnimSpeed * DeltaTime;
+                if(AnimStep >= AnimFrames+1) AnimStep = 1f;
+            } else AnimStep = 0f;
         }
     }
 

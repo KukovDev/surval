@@ -7,12 +7,13 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.*;
 import surval.screens.*;
 
 public class Main extends Game {
 	public static LoadAssets AssetsData; // Класс ассетов.
 	public static final int FPS = 60;    // Установленный FPS.
+
 
 	@Override public void create() {
 		InputMultiplexer multiplexer = new InputMultiplexer();
@@ -41,6 +42,7 @@ public class Main extends Game {
 		return Gdx.graphics.getFramesPerSecond();
 	}
 
+	// Передвигается ли мышь/палец:
 	public static boolean IsTouchDrag() {
 		boolean istouchdrag = InputProcess.touchdrag;
 		InputProcess.touchdrag = false;

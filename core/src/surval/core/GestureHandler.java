@@ -4,8 +4,8 @@
 
 package surval.core;
 
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.input.*;
+import com.badlogic.gdx.math.*;
 
 public class GestureHandler implements GestureDetector.GestureListener {
     public static float oldzoomdist;
@@ -54,7 +54,5 @@ public class GestureHandler implements GestureDetector.GestureListener {
     }
 
     @Override
-    public void pinchStop() {
-
-    }
+    public void pinchStop() { }
 }

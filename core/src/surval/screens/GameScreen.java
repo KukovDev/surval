@@ -27,7 +27,6 @@ public class GameScreen implements Screen {
     private List<Alive> alives;          // Список существ.
 
 
-
     @Override public void show() {
         batch = new SpriteBatch();
 
@@ -36,11 +35,13 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         CameraTarget = new Vector2(0, 0);
 
-        AssetsData = Main.AssetsData; // Сохранить ассеты.
+        AssetsData = Main.AssetsData; // Ассеты.
 
+        // Создание карты:
         world = new World(1024, 1024);
         world.Generate();
 
+        // Создание списка существ и добавление игрока:
         alives = new ArrayList<>();
         alives.add(new Player(new Vector2((world.Width)*world.BlockSize/2f, (world.Height)*world.BlockSize/2f)));
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
@@ -48,20 +49,19 @@ public class GameScreen implements Screen {
 
     // Тут вся логика:
     public void Update() {
-        Gdx.graphics.setTitle("FPS: " + Main.GetFPS() + " | " +
-                              "Map-Size: W-" + world.Width + " H-" + world.Height);
+        Gdx.graphics.setTitle("FPS: " + Main.GetFPS());
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {
             alive.Update(DeltaTime);
-            if(Objects.equals(alive.ID, AliveType.Player))
+            if(Objects.equals(alive.ID, "player"))
                 CameraTarget = alive.Pos; // Передвигать камеру.
         }
 
         // TODO переделать -> перенести в отдельный обработчик работы с блоками и сделать поддержку сенсорного экрана:
         // Установить блок правой кнопкой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.LEFT) {
-            Vector2 hoverpos = new Vector2(world.GetHoverTile(camera));
+            Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
             Block block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
             if(!Objects.equals(world.BlockList[(int) hoverpos.x][(int) hoverpos.y].ID, block.ID)) {
                 world.SetBlock(block, hoverpos);
@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
         }
         // Установить блок правой левой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.RIGHT) {
-            Vector2 hoverpos = new Vector2(world.GetHoverTile(camera));
+            Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
             if(world.BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
                 world.BreakBlock(hoverpos);
             }
@@ -90,12 +90,10 @@ public class GameScreen implements Screen {
         // Отрисовка спрайтов:
         batch.begin();
         world.Draw(batch, camera, DeltaTime); // Отрисовка карты.
-
         // Проходиться по существам и отрисовывать их:
         for(Alive alive : alives) {
             alive.Draw(batch);
         }
-
         batch.end();
     }
 
@@ -126,7 +124,7 @@ public class GameScreen implements Screen {
     void CameraUpdate() {
         float CameraMoveSpeed = 0.05f; // Скорость передвижения камеры.
         float CameraZoomSpeed = 0.1f;  // Скорость зума камеры.
-        float CameraZoomMin = 0.75f;   // Максимальное приближение.
+        float CameraZoomMin = 0.5f;    // Максимальное приближение.
         float CameraZoomMax = 3f;      // Максимальное отдаление.
 
         // Плавное перемещение камеры к цели:

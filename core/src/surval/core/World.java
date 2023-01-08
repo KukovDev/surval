@@ -8,14 +8,13 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
-import java.util.*;
 import surval.blocks.*;
 
 public class World {
     public Block[][] BlockList; // Список блоков.
-    public int Width;                   // Ширина карты.
-    public int Height;                  // Высота карты.
-    public byte BlockSize = 64;         // Размер блока.
+    public int Width;           // Ширина карты.
+    public int Height;          // Высота карты.
+    public byte BlockSize = 64; // Размер блока.
 
     public World(int Width, int Height) {
         this.Width = Width;
@@ -32,34 +31,28 @@ public class World {
         }
     }
 
-    // TODO вынести в отдельный поток:
+    // TODO оптимизировать! вывести в отдельный поток.
     // Функция отрисовки карты:
     public void Draw(SpriteBatch batch, OrthographicCamera camera, float DeltaTime) {
         for(int x=0;x<Width;x++) {
             for(int y=0;y<Height;y++) {
-                int BlockPosX = x*BlockSize;
-                int BlockPosY = y*BlockSize;
-
                 // Проверка на то, видит ли камера, блок:
-                Rectangle BlockRect = new Rectangle(BlockPosX, BlockPosY, BlockSize, BlockSize); // Rect блока.
+                Rectangle BlockRect = new Rectangle(x*BlockSize, y*BlockSize, BlockSize, BlockSize); // Rect блока.
                 Rectangle CameraRect = new Rectangle( // Rect камеры с учётом масштабирования камеры:
                         camera.position.x - (camera.viewportWidth * camera.zoom) / 2,
                         camera.position.y - (camera.viewportHeight * camera.zoom) / 2,
                         camera.viewportWidth * camera.zoom, camera.viewportHeight * camera.zoom);
 
                 if(BlockRect.overlaps(CameraRect)) {
+                    BlockList[x][y].Update(DeltaTime); // TODO убрать это отсюда!
                     BlockList[x][y].Draw(batch, BlockSize);
-
-                    if(Objects.equals(BlockList[x][y].ID, "bonfire")) {
-                        BlockList[x][y].Update(DeltaTime);
-                    }
                 }
             }
         }
     }
 
     // Получение позиции наведения на карте:
-    public Vector2 GetHoverTile(OrthographicCamera camera) {
+    public Vector2 GetHoverPos(OrthographicCamera camera) {
         // Суть такова:
         // Вы должны сначала получить позицию карты на экране,
         // добавить позицию мыши/пальца умноженную на зум,
@@ -97,6 +90,8 @@ public class World {
 
     // Удалить блок:
     public void BreakBlock(Vector2 hoverpos) {
-        BlockList[(int)hoverpos.x][(int)hoverpos.y] = BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock;
+        Block bgblock = BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock;
+        BlockList[(int)hoverpos.x][(int)hoverpos.y] = null;
+        BlockList[(int)hoverpos.x][(int)hoverpos.y] = bgblock;
     }
 }
