@@ -7,6 +7,7 @@ package surval.alives;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
+import java.util.*;
 import surval.core.*;
 
 public class Player extends Alive {
@@ -30,19 +31,24 @@ public class Player extends Alive {
 
     // Функция обновления существа:
     public void Update(float DeltaTime) {
+        Vector2 OldPos = new Vector2(Pos);
+        float SpeedVar = Speed;
+
         // Управление: // TODO сделать поддержку сенсорного экрана:
+        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) SpeedVar = Speed*2f;
+
         if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            Pos.y += Speed * DeltaTime;
+            Pos.y += SpeedVar * DeltaTime;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            Pos.x -= Speed * DeltaTime;
+            Pos.x -= SpeedVar * DeltaTime;
             IsFlip = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            Pos.y -= Speed * DeltaTime;
+            Pos.y -= SpeedVar * DeltaTime;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            Pos.x += Speed * DeltaTime;
+            Pos.x += SpeedVar * DeltaTime;
             IsFlip = false;
         }
 
@@ -58,19 +64,13 @@ public class Player extends Alive {
            !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             AnimStep = 0f;
         } else { // Если нажимаются, то анимировать:
-            // Проверка на нажатие противоположных направлений:
-            if(!(Gdx.input.isKeyPressed(Input.Keys.W)    && Gdx.input.isKeyPressed(Input.Keys.S))     &&
-               !(Gdx.input.isKeyPressed(Input.Keys.A)    && Gdx.input.isKeyPressed(Input.Keys.D))     &&
-               !(Gdx.input.isKeyPressed(Input.Keys.UP)   && Gdx.input.isKeyPressed(Input.Keys.DOWN))  &&
-               !(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) &&
-               !(Gdx.input.isKeyPressed(Input.Keys.W)    && Gdx.input.isKeyPressed(Input.Keys.DOWN))  &&
-               !(Gdx.input.isKeyPressed(Input.Keys.S)    && Gdx.input.isKeyPressed(Input.Keys.UP))    &&
-               !(Gdx.input.isKeyPressed(Input.Keys.A)    && Gdx.input.isKeyPressed(Input.Keys.RIGHT)) &&
-               !(Gdx.input.isKeyPressed(Input.Keys.D)    && Gdx.input.isKeyPressed(Input.Keys.LEFT))) {
+            // Проверка на передвижение:
+            if(!Objects.equals(Pos, OldPos)) {
                 AnimStep += AnimSpeed * DeltaTime;
                 if(AnimStep >= AnimFrames+1) AnimStep = 1f;
             } else AnimStep = 0f;
         }
+
     }
 
     // Функция отрисовки существа:
