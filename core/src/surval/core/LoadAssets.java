@@ -91,8 +91,8 @@ public class LoadAssets {
     // Загрузка живых существ:
     void LoadAlives() {
         Player.addAll(
-                alives_atlas.createSprite("stand"),
-                alives_atlas.createSprite("run1"),
-                alives_atlas.createSprite("run2"));
+                alives_atlas.createSprite("player-stand"),
+                alives_atlas.createSprite("player-run1"),
+                alives_atlas.createSprite("player-run2"));
     }
 }

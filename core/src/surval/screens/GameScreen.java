@@ -126,6 +126,7 @@ public class GameScreen implements Screen {
         float CameraZoomSpeed = 0.1f;  // Скорость зума камеры.
         float CameraZoomMin = 0.5f;    // Максимальное приближение.
         float CameraZoomMax = 3f;      // Максимальное отдаление.
+        if(Gdx.app.getType() == Application.ApplicationType.Android) CameraZoomMax = 1.5f;
 
         // Плавное перемещение камеры к цели:
         camera.position.x += ((CameraTarget.x - camera.position.x) * CameraMoveSpeed) * DeltaTime;
