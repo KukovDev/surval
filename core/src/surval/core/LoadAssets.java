@@ -5,39 +5,38 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.utils.*;
 
 public class LoadAssets {
     // Атлас блоков:
     public TextureAtlas blocks_atlas;
-
     // Атлас живых существ:
     public TextureAtlas alives_atlas;
-
     // Блоки:
     public Array<Sprite> Snow;    // Снежная поверхность.
     public Array<Sprite> Stone;   // Каменная поверхность.
     public Array<Sprite> Bonfire; // Костёр.
     public Sprite NullBlock;      // Неизвестно.
-
     // Живые существа:
     public Array<Sprite> Player; // Игрок.
+
+    // Шрифты:
+    public BitmapFont PixelFont;
 
 
     // Функция вызывается автоматически при создании экземпляра этого класса:
     public LoadAssets() {
         // Атлас блоков:
         blocks_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/blocks.atlas"));
-
         // Атлас живых существ:
         alives_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/alives.atlas"));
-
         // Блоки:
         Snow = new Array<>();
         Stone = new Array<>();
         Bonfire = new Array<>();
-
         // Живые существа:
         Player = new Array<>();
     }
@@ -46,12 +45,14 @@ public class LoadAssets {
     public void AssetsLoad() {
         LoadBlocks();
         LoadAlives();
+        LoadFonts();
     }
 
     // Удаляет всё что было загружено:
     public void AssetsDispose() {
         blocks_atlas.dispose();
         alives_atlas.dispose();
+        PixelFont.dispose();
 
         Snow.clear();
         Stone.clear();
@@ -94,5 +95,13 @@ public class LoadAssets {
                 alives_atlas.createSprite("player-stand"),
                 alives_atlas.createSprite("player-run1"),
                 alives_atlas.createSprite("player-run2"));
+    }
+
+    // Загрузить шрифты:
+    void LoadFonts() {
+        FreeTypeFontGenerator.FreeTypeFontParameter parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameters.size = 16;
+        parameters.color = new Color(1f, 1f, 1f, 1f);
+        PixelFont = Main.FontUpdateParameters("fonts/pixel.ttf", parameters);
     }
 }

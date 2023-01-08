@@ -8,6 +8,7 @@ package surval.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import java.util.*;
@@ -17,14 +18,15 @@ import surval.core.*;
 
 public class GameScreen implements Screen {
     // Прочие поля:
-    private SpriteBatch batch;           // Партия спрайтов для отрисовки.
-    private LoadAssets AssetsData;       // Ассеты.
-    private OrthographicCamera camera;   // Камера 2D.
-    private Vector2 CameraTarget;        // Цель за которой будет следить камера.
-    private float CameraZoomTarget = 1f; // Цель зума камеры. Это поле, текущего (не плавного) зума.
-    private float DeltaTime = 1;         // Дельта времени.
-    private World world;                 // Карта.
-    private List<Alive> alives;          // Список существ.
+    private SpriteBatch batch;             // Партия спрайтов для отрисовки.
+    private OrthographicCamera camera;     // Камера 2D.
+    private Vector2 CameraTarget;          // Цель за которой будет следить камера.
+    private float CameraZoomTarget = 1f;   // Цель зума камеры. Это поле, текущего (не плавного) зума.
+    private float DeltaTime = 1;           // Дельта времени.
+    private World world;                   // Карта.
+    private List<Alive> alives;            // Список существ.
+    private ShapeRenderer shapeRenderer;   // Надо для рисования фигур.
+    private short MemClearTimeHandler = 0; // Увеличивается на 1 каждый кадр и когда приходит время, обнуляется.
 
 
     @Override public void show() {
@@ -35,16 +37,16 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         CameraTarget = new Vector2(0, 0);
 
-        AssetsData = Main.AssetsData; // Ассеты.
-
         // Создание карты:
         world = new World(1024, 1024);
         world.Generate();
 
         // Создание списка существ и добавление игрока:
         alives = new ArrayList<>();
-        alives.add(new Player(new Vector2((world.Width)*world.BlockSize/2f, (world.Height)*world.BlockSize/2f)));
+        alives.add(new Player(new Vector2(0, 0)));
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
+
+        shapeRenderer = new ShapeRenderer();
     }
 
     // Тут вся логика:
@@ -63,22 +65,31 @@ public class GameScreen implements Screen {
         if(InputProcess.touchdownbutton == Input.Buttons.LEFT) {
             Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
             Block block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
-            if(!Objects.equals(world.BlockList[(int) hoverpos.x][(int) hoverpos.y].ID, block.ID)) {
-                world.SetBlock(block, hoverpos);
-            }
+            try {
+                if(!Objects.equals(world.BlockList[(int) hoverpos.x][(int) hoverpos.y].ID, block.ID)) {
+                    world.SetBlock(block, hoverpos);
+                }
+            } catch(Exception ignored) { }
         }
         // Установить блок правой левой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.RIGHT) {
             Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
-            if(world.BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
-                world.BreakBlock(hoverpos);
-            }
+            try {
+                if(world.BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
+                    world.BreakBlock(hoverpos);
+                }
+            } catch(Exception ignored) { }
         }
     }
 
     // Тут всё что должно отрисовываться:
     @Override public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
+        MemClearTimeHandler++;
+        if(MemClearTimeHandler >= Main.FPS*60) { // Если прошло 60 секунд с последней очистки, запустить сборщик мусора:
+            MemClearTimeHandler = 0;
+            System.gc();
+        }
 
         // Получение дельты:
         DeltaTime = Gdx.graphics.getDeltaTime() * 60; // Изменяя последнее число, можно менять скорость протекания процессов в игре.
@@ -95,6 +106,8 @@ public class GameScreen implements Screen {
             alive.Draw(batch);
         }
         batch.end();
+
+        //Main.DrawDevPanel(shapeRenderer, batch, camera);
     }
 
     @Override public void resize(int width, int height) {
@@ -117,7 +130,7 @@ public class GameScreen implements Screen {
 
     @Override public void dispose() {
         // Пропишите всё что использует ОЗУ.
-        AssetsData.AssetsDispose();
+        Main.AssetsData.AssetsDispose();
     }
 
     // Функция обновления камеры:

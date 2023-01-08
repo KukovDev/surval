@@ -7,7 +7,12 @@
 package surval.core;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
+import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.input.*;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import surval.screens.*;
 
 public class Main extends Game {
@@ -61,5 +66,41 @@ public class Main extends Game {
 			}
 		}
 		return scroll;
+	}
+
+	// Получить новый шрифт:
+	public static BitmapFont FontUpdateParameters(String FontLink, FreeTypeFontGenerator.FreeTypeFontParameter parameters) {
+		return new FreeTypeFontGenerator(Gdx.files.internal(FontLink)).generateFont(parameters);
+	}
+
+	// Нарисовать заполненный прямоугольник:
+	public static void DrawRectFilled(int PosX, int PosY, int Width, int Height, Color color,
+									  ShapeRenderer shapeRenderer, OrthographicCamera camera) {
+		// Если смешивание цветов не включено, включаем так:
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		// Не забудьте задать матрицу проекции таким образом:
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.setColor(color);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.rect(PosX, PosY, Width, Height);
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	// Отрисовать панель разработчика:
+	public static void DrawDevPanel(ShapeRenderer shapeRenderer, SpriteBatch batch, OrthographicCamera camera) {
+		DrawRectFilled(
+				(int)(camera.position.x-((camera.viewportWidth/2)*camera.zoom)),
+				(int)(camera.position.y-((camera.viewportHeight/2)*camera.zoom)),
+				(int)(192*camera.zoom),
+				(int)(camera.viewportHeight*camera.zoom),
+				new Color(0, 0, 0, .75f), shapeRenderer, camera);
+		batch.begin();
+		AssetsData.PixelFont.getData().setScale(camera.zoom);
+		AssetsData.PixelFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
+				(int)(camera.position.x-((camera.viewportWidth/2)*camera.zoom))+4,
+				(int)(camera.position.y-((camera.viewportHeight/2)*camera.zoom))+(camera.viewportHeight*camera.zoom));
+		batch.end();
 	}
 }

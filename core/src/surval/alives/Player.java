@@ -10,8 +10,6 @@ import com.badlogic.gdx.math.*;
 import surval.core.*;
 
 public class Player extends Alive {
-    public Sprite stand;
-    public Sprite[] run;
     private boolean IsFlip;
     private float AnimStep;
     float AnimSpeed;
@@ -19,8 +17,6 @@ public class Player extends Alive {
 
     public Player(Vector2 Pos) {
         this.Pos = Pos;
-        stand = Main.AssetsData.Player.get(0);
-        run = new Sprite[] { Main.AssetsData.Player.get(1), Main.AssetsData.Player.get(2) };
 
         HP = 100;          // Очки здоровья.
         Speed = 8f;        // Скорость передвижения.
