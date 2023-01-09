@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.input.*;
-import com.sun.org.apache.xpath.internal.operations.Or;
+import com.badlogic.gdx.math.*;
 import surval.screens.*;
 
 public class Main extends Game {
@@ -74,7 +74,7 @@ public class Main extends Game {
 	}
 
 	// Нарисовать заполненный прямоугольник:
-	public static void DrawRectFilled(int PosX, int PosY, int Width, int Height, Color color,
+	public static void DrawRectFilled(float PosX, float PosY, float Width, float Height, Color color,
 									  ShapeRenderer shapeRenderer, OrthographicCamera camera) {
 		// Если смешивание цветов не включено, включаем так:
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -89,18 +89,36 @@ public class Main extends Game {
 	}
 
 	// Отрисовать панель разработчика:
-	public static void DrawDevPanel(ShapeRenderer shapeRenderer, SpriteBatch batch, OrthographicCamera camera) {
+	public static void DrawDevPanel(ShapeRenderer shapeRenderer, SpriteBatch uibatch, OrthographicCamera uicamera,
+									float DeltaTime, Vector2 PlayerPos, Vector2 HoverPos, Vector2 WorldSize) {
 		DrawRectFilled(
-				(int)(camera.position.x-((camera.viewportWidth/2)*camera.zoom)),
-				(int)(camera.position.y-((camera.viewportHeight/2)*camera.zoom)),
-				(int)(192*camera.zoom),
-				(int)(camera.viewportHeight*camera.zoom),
-				new Color(0, 0, 0, .75f), shapeRenderer, camera);
-		batch.begin();
-		AssetsData.PixelFont.getData().setScale(camera.zoom);
-		AssetsData.PixelFont.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-				(int)(camera.position.x-((camera.viewportWidth/2)*camera.zoom))+4,
-				(int)(camera.position.y-((camera.viewportHeight/2)*camera.zoom))+(camera.viewportHeight*camera.zoom));
-		batch.end();
+				uicamera.position.x-((uicamera.viewportWidth/2)*uicamera.zoom),
+				uicamera.position.y-((uicamera.viewportHeight/2)*uicamera.zoom),
+				256*uicamera.zoom,
+				uicamera.viewportHeight*uicamera.zoom,
+				new Color(0, 0, 0, .85f), shapeRenderer, uicamera);
+
+		uibatch.begin();
+		float CameraPosX = uicamera.position.x-(uicamera.viewportWidth/2);
+		float CameraPosY = uicamera.position.y+(uicamera.viewportHeight/2);
+
+		AssetsData.PixelFont.draw(uibatch, "<Dev-Panel>",
+				CameraPosX+75, CameraPosY-4);
+
+		AssetsData.PixelFont.draw(uibatch, "FPS: " + GetFPS(),
+				CameraPosX+4, CameraPosY-4*8);
+
+		AssetsData.PixelFont.draw(uibatch, "DeltaTime: " + DeltaTime,
+				CameraPosX+4, CameraPosY-4*12);
+
+		AssetsData.PixelFont.draw(uibatch, "Player Pos: x=" + (int)PlayerPos.x + ", y=" + (int)PlayerPos.y,
+				CameraPosX+4, CameraPosY-4*16);
+
+		AssetsData.PixelFont.draw(uibatch, "Hover Pos: x=" + (int)HoverPos.x + ", y=" + (int)HoverPos.y,
+				CameraPosX+4, CameraPosY-4*20);
+
+		AssetsData.PixelFont.draw(uibatch, "World Size: W=" + (int)WorldSize.x + ", H=" + (int)WorldSize.y,
+				CameraPosX+4, CameraPosY-4*24);
+		uibatch.end();
 	}
 }

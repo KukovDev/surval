@@ -19,31 +19,41 @@ import surval.core.*;
 public class GameScreen implements Screen {
     // Прочие поля:
     private SpriteBatch batch;             // Партия спрайтов для отрисовки.
-    private OrthographicCamera camera;     // Камера 2D.
+    private SpriteBatch uibatch;           // Партия спрайтов для отрисовки ui.
+    private OrthographicCamera uicamera;   // Камера интерфейса.
+    private OrthographicCamera camera;     // Игровая камера 2D.
     private Vector2 CameraTarget;          // Цель за которой будет следить камера.
     private float CameraZoomTarget = 1f;   // Цель зума камеры. Это поле, текущего (не плавного) зума.
     private float DeltaTime = 1;           // Дельта времени.
     private World world;                   // Карта.
     private List<Alive> alives;            // Список существ.
     private ShapeRenderer shapeRenderer;   // Надо для рисования фигур.
-    private short MemClearTimeHandler = 0; // Увеличивается на 1 каждый кадр и когда приходит время, обнуляется.
+    private boolean IsVisibleDevPanel;     // Показывать ли панель разработчика.
 
 
     @Override public void show() {
         batch = new SpriteBatch();
+        uibatch = new SpriteBatch();
 
         // Создать камеру:
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         CameraTarget = new Vector2(0, 0);
 
+        // Создать ui камеру:
+        uicamera = new OrthographicCamera();
+        uicamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         // Создание карты:
         world = new World(1024, 1024);
         world.Generate();
+        Vector2 bonfireblockpos = new Vector2(world.Width/2f, world.Height/2f);
+        world.SetBlock(new BonfireBlock((int)bonfireblockpos.x, (int)bonfireblockpos.y), bonfireblockpos);
 
         // Создание списка существ и добавление игрока:
         alives = new ArrayList<>();
-        alives.add(new Player(new Vector2(0, 0)));
+        alives.add(new Player(new Vector2(world.Width/2f*world.BlockSize-world.BlockSize,
+                                          world.Height/2f*world.BlockSize+(world.BlockSize/2f))));
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
 
         shapeRenderer = new ShapeRenderer();
@@ -51,7 +61,10 @@ public class GameScreen implements Screen {
 
     // Тут вся логика:
     public void Update() {
-        Gdx.graphics.setTitle("FPS: " + Main.GetFPS());
+        // Если нажимается CTRL или SYM, и английская 'P', показать панель разработчика. Если нажата ESC, скрыть:
+        if((Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SYM)) &&
+            Gdx.input.isKeyPressed(Input.Keys.P))          { IsVisibleDevPanel = true;  }
+        else if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) { IsVisibleDevPanel = false; }
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {
@@ -85,20 +98,16 @@ public class GameScreen implements Screen {
     // Тут всё что должно отрисовываться:
     @Override public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f); // Очистить экран.
-        MemClearTimeHandler++;
-        if(MemClearTimeHandler >= Main.FPS*60) { // Если прошло 60 секунд с последней очистки, запустить сборщик мусора:
-            MemClearTimeHandler = 0;
-            System.gc();
-        }
 
         // Получение дельты:
         DeltaTime = Gdx.graphics.getDeltaTime() * 60; // Изменяя последнее число, можно менять скорость протекания процессов в игре.
 
         Update();                                     // Обновление основной логики.
         CameraUpdate();                               // Обновить камеру.
-        batch.setProjectionMatrix(camera.combined);   // Использовать систему координат, указанную камерой.
+        uicamera.update();                            // Обновить камеру интерфейса.
 
         // Отрисовка спрайтов:
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         world.Draw(batch, camera, DeltaTime); // Отрисовка карты.
         // Проходиться по существам и отрисовывать их:
@@ -107,10 +116,24 @@ public class GameScreen implements Screen {
         }
         batch.end();
 
-        //Main.DrawDevPanel(shapeRenderer, batch, camera);
+        // Отрисовка ui:
+        uibatch.setProjectionMatrix(uicamera.combined);
+
+        // Отрисовать панель разработчика:
+        if(IsVisibleDevPanel)
+            Main.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),
+                    world.GetHoverPos(camera), new Vector2(world.Width, world.Height));
+
+        uibatch.begin();
+        // Отрисовка интерфейса...
+        uibatch.end();
     }
 
     @Override public void resize(int width, int height) {
+        // Обновить разрешение ui камеры:
+        uicamera.viewportWidth = width; uicamera.viewportHeight = height;
+        uicamera.update();
+
         // Обновить разрешение камеры:
         camera.viewportWidth = width; camera.viewportHeight = height;
         camera.update();
@@ -131,6 +154,9 @@ public class GameScreen implements Screen {
     @Override public void dispose() {
         // Пропишите всё что использует ОЗУ.
         Main.AssetsData.AssetsDispose();
+        batch.dispose();
+        uibatch.dispose();
+        shapeRenderer.dispose();
     }
 
     // Функция обновления камеры:

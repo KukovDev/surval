@@ -68,18 +68,30 @@ public class World {
         hoverpos.y = (float)-(MapPosY-TouchPosY)/BlockSize; // Получить наведение на карте по высоте.
 
         // Если наведение меньше 0:
-        if(hoverpos.x < 0) hoverpos.x = -1;
-        if(hoverpos.y < 0) hoverpos.y = -1;
-
-        // Если наведение больше размеров карты:
-        if(hoverpos.x >= Width)  hoverpos.x = Width;
-        if(hoverpos.y >= Height) hoverpos.y = Height;
+        if(hoverpos.x < 0) hoverpos.x = hoverpos.x-1;
+        if(hoverpos.y < 0) hoverpos.y = hoverpos.y-1;
 
         // Округлить:
         hoverpos.x = (int)hoverpos.x;
         hoverpos.y = (int)hoverpos.y;
 
         return hoverpos;
+    }
+
+    // Получение позиции существа на карте:
+    public Vector2 GetAlivePos(Vector2 AlivePos) {
+        Vector2 alivepos = new Vector2();
+        alivepos.x = AlivePos.x/BlockSize;
+        alivepos.y = AlivePos.y/BlockSize;
+
+        // Если наведение меньше 0:
+        if(alivepos.x < 0) alivepos.x = alivepos.x-1;
+        if(alivepos.y < 0) alivepos.y = alivepos.y-1;
+
+        // Округлить:
+        alivepos.x = (int)alivepos.x;
+        alivepos.y = (int)alivepos.y;
+        return alivepos;
     }
 
     // Установить блок:

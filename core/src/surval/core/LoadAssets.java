@@ -100,7 +100,7 @@ public class LoadAssets {
     // Загрузить шрифты:
     void LoadFonts() {
         FreeTypeFontGenerator.FreeTypeFontParameter parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameters.size = 16;
+        parameters.size = 12;
         parameters.color = new Color(1f, 1f, 1f, 1f);
         PixelFont = Main.FontUpdateParameters("fonts/pixel.ttf", parameters);
     }
