@@ -12,7 +12,7 @@ public class UI {
     public static String[] HotBarCellsList = new String[HotBarCells]; // Ресурсы в горячей панели.
     public static int HotBarTargetCell;                               // Выделение ячейки горячей панели.
 
-    // Отрисовать горячую панель инвентаря:
+    // Отрисовать хот бар инвентаря:
     public static void DrawHotBar(SpriteBatch uibatch, OrthographicCamera uicamera) {
         uibatch.begin();
         for(int x=0;x<HotBarCells;x++) {

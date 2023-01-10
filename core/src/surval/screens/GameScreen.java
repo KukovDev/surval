@@ -105,20 +105,22 @@ public class GameScreen implements Screen {
             Block block;
 
             // Костёр:
-            if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Bonfire))
-                block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
-            // Снежная поверхность:
-            else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Snowland))
-                block = new SnowlandBlock((int) hoverpos.x, (int) hoverpos.y);
-            // Каменная поверхность:
-            else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Stoneland))
-                block = new StonelandBlock((int)hoverpos.x, (int)hoverpos.y);
-            // Иначе, поставить блок 'null':
-            else block = new NullBlock((int)hoverpos.x, (int)hoverpos.y);
+            if(!Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], null)) {
+                if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Bonfire))
+                    block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
+                    // Снежная поверхность:
+                else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Snowland))
+                    block = new SnowlandBlock((int) hoverpos.x, (int) hoverpos.y);
+                    // Каменная поверхность:
+                else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Stoneland))
+                    block = new StonelandBlock((int)hoverpos.x, (int)hoverpos.y);
+                    // Иначе, поставить блок 'null':
+                else block = new NullBlock((int)hoverpos.x, (int)hoverpos.y);
 
-            try {
-                world.SetBlock(block, hoverpos);
-            } catch(Exception ignored) { }
+                try {
+                    world.SetBlock(block, hoverpos);
+                } catch(Exception ignored) { }
+            }
         }
         // Удалить блок правой кнопкой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.RIGHT) {
@@ -154,7 +156,7 @@ public class GameScreen implements Screen {
 
         // Отрисовка ui:
         uibatch.setProjectionMatrix(uicamera.combined);
-        UI.DrawHotBar(uibatch, uicamera); // Отрисовать горячую панель инвентаря.
+        UI.DrawHotBar(uibatch, uicamera); // Отрисовать хот бар инвентаря.
         // Отрисовать панель разработчика:
         if(IsVisibleDevPanel)
             UI.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),

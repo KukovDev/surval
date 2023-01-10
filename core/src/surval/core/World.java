@@ -107,8 +107,15 @@ public class World {
     // Установить блок:
     public void SetBlock(Block block, Vector2 hoverpos) {
         if(!Objects.equals(BlockList[(int)hoverpos.x][(int)hoverpos.y].ID, block.ID)) {
-            block.BackgroundBlock = BlockList[(int) hoverpos.x][(int) hoverpos.y];
-            BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
+            if(Objects.equals(block.Type, "land") && Objects.equals(BlockList[(int)hoverpos.x][(int)hoverpos.y].Type, "land")) {
+                BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock = null;
+                BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
+            }
+            else if(Objects.equals(block.Type, "block") &&
+                    !Objects.equals(block.Type, BlockList[(int)hoverpos.x][(int)hoverpos.y].Type)) {
+                block.BackgroundBlock = BlockList[(int)hoverpos.x][(int)hoverpos.y];
+                BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
+            }
         }
     }
 

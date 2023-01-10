@@ -15,7 +15,7 @@ public class BonfireBlock extends Block {
     public BonfireBlock(int PosX, int PosY) {
         Pos.x = PosX; Pos.y = PosY;
         ID = "bonfire";
-        UpdateLoop = true;
+        Type = "block";
 
         AnimSpeed = 0.15f;
         AnimFrames = 8;

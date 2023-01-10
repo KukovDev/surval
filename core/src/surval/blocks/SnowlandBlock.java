@@ -13,6 +13,7 @@ public class SnowlandBlock extends Block {
     public SnowlandBlock(int PosX, int PosY) {
         Pos.x = PosX; Pos.y = PosY;
         ID = "snowland";
+        Type = "land";
         sprite = Main.AssetsData.Snow.get((int)(Math.random()*3));
     }
 

@@ -11,6 +11,7 @@ public class NullBlock extends Block {
     public NullBlock(int PosX, int PosY) {
         Pos.x = PosX; Pos.y = PosY;
         ID = "nullblock";
+        Type = "block";
     }
 
     public void Draw(SpriteBatch batch, int BlockSize) {
