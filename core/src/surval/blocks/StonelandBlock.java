@@ -4,9 +4,8 @@
 
 package surval.blocks;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import surval.core.Main;
+import com.badlogic.gdx.graphics.g2d.*;
+import surval.core.*;
 
 public class StonelandBlock extends Block {
     public Sprite sprite;

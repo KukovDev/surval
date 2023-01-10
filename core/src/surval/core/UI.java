@@ -16,15 +16,16 @@ public class UI {
     public static void DrawHotBar(SpriteBatch uibatch, OrthographicCamera uicamera) {
         uibatch.begin();
         for(int x=0;x<HotBarCells;x++) {
-            float PosX = uicamera.position.x+48f*x-48f*HotBarCells/2;
+            int CellSize = 48;
+            float PosX = uicamera.position.x+CellSize*x-CellSize*HotBarCells/2f;
             float PosY = uicamera.position.y-uicamera.viewportHeight/2;
 
             // Выделение ячейки:
             if(HotBarTargetCell > HotBarCells-1) HotBarTargetCell = 0;
             if(HotBarTargetCell < 0) HotBarTargetCell = HotBarCells-1;
-            if(x == HotBarTargetCell) uibatch.draw(Main.AssetsData.UI.get(1), PosX, PosY+48+4f, 48f, 12f);
+            if(x == HotBarTargetCell) uibatch.draw(Main.AssetsData.UI.get(1), PosX, PosY+CellSize+4f, CellSize, CellSize/4f);
 
-            uibatch.draw(Main.AssetsData.UI.get(0), PosX, PosY, 48f, 48f); // Отрисовать ячейку.
+            uibatch.draw(Main.AssetsData.UI.get(0), PosX, PosY, CellSize, CellSize); // Отрисовать ячейку.
 
             try {
                 uibatch.draw(Main.AssetsData.resources.Resources.get(HotBarCellsList[x]),

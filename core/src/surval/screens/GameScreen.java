@@ -87,12 +87,16 @@ public class GameScreen implements Screen {
             }
         }).start();
 
-        // Проходиться по существам и обновлять их:
-        for(Alive alive : alives) {
-            alive.Update(DeltaTime);
-            if(Objects.equals(alive.ID, "player"))
-                CameraTarget = alive.Pos; // Передвигать камеру.
-        }
+        // Проходиться по существам и обновлять их в отдельном потоке:
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                for(Alive alive : alives) {
+                    alive.Update(DeltaTime);
+                    if(Objects.equals(alive.ID, "player")) CameraTarget = alive.Pos; // Переместить цель камеры.
+                }
+            }
+        }).start();
 
         // TODO переделать -> перенести в отдельный обработчик работы с блоками и сделать поддержку сенсорного экрана:
         // Установить блок левой кнопкой мыши:
@@ -142,6 +146,7 @@ public class GameScreen implements Screen {
         world.Draw(batch, camera); // Отрисовка карты.
 
         // Проходиться по существам и отрисовывать их:
+        // TODO сделать проверку на то, видит ли камера, существо.
         for(Alive alive : alives) {
             alive.Draw(batch);
         }
