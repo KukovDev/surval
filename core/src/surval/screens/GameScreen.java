@@ -159,7 +159,8 @@ public class GameScreen implements Screen {
         UI.DrawHotBar(uibatch, uicamera); // Отрисовать хот бар инвентаря.
         // Отрисовать панель разработчика:
         if(IsVisibleDevPanel)
-            UI.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),
+            UI.DrawDevPanel(shapeRenderer, uibatch, uicamera, world.GetAlivePos(new Vector2(camera.position.x, camera.position.y)),
+                    camera.zoom, DeltaTime, world.GetAlivePos(alives.get(0).Pos),
                     world.GetHoverPos(camera), new Vector2(world.Width, world.Height));
     }
 

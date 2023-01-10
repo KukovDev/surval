@@ -37,7 +37,8 @@ public class UI {
 
     // Отрисовать панель разработчика:
     public static void DrawDevPanel(ShapeRenderer shapeRenderer, SpriteBatch uibatch, OrthographicCamera uicamera,
-                                    float DeltaTime, Vector2 PlayerPos, Vector2 HoverPos, Vector2 WorldSize) {
+                                    Vector2 gamecamera, float camerazoom, float DeltaTime, Vector2 PlayerPos, Vector2 HoverPos,
+                                    Vector2 WorldSize) {
         Main.DrawRectFilled(
                 uicamera.position.x-((uicamera.viewportWidth/2)*uicamera.zoom),
                 uicamera.position.y-((uicamera.viewportHeight/2)*uicamera.zoom),
@@ -53,19 +54,26 @@ public class UI {
                 CameraPosX+75, CameraPosY-4);
 
         Main.AssetsData.PixelFont.draw(uibatch, "FPS: " + Main.GetFPS(),
-                CameraPosX+4, CameraPosY-4*8);
+                CameraPosX+4, CameraPosY-4*10);
 
         Main.AssetsData.PixelFont.draw(uibatch, "DeltaTime: " + DeltaTime,
-                CameraPosX+4, CameraPosY-4*12);
+                CameraPosX+4, CameraPosY-4*18);
 
         Main.AssetsData.PixelFont.draw(uibatch, "Player Pos: x=" + (int)PlayerPos.x + ", y=" + (int)PlayerPos.y,
-                CameraPosX+4, CameraPosY-4*16);
+                CameraPosX+4, CameraPosY-4*26);
+
+        Main.AssetsData.PixelFont.draw(uibatch, "Camera Pos: x=" + (int)gamecamera.x + ", y=" + (int)gamecamera.y,
+                CameraPosX+4, CameraPosY-4*34);
+
+        Main.AssetsData.PixelFont.draw(uibatch, "Camera Zoom: " + camerazoom,
+                CameraPosX+4, CameraPosY-4*42);
 
         Main.AssetsData.PixelFont.draw(uibatch, "Hover Pos: x=" + (int)HoverPos.x + ", y=" + (int)HoverPos.y,
-                CameraPosX+4, CameraPosY-4*20);
+                CameraPosX+4, CameraPosY-4*50);
+
 
         Main.AssetsData.PixelFont.draw(uibatch, "World Size: W=" + (int)WorldSize.x + ", H=" + (int)WorldSize.y,
-                CameraPosX+4, CameraPosY-4*24);
+                CameraPosX+4, CameraPosY-4*58);
         uibatch.end();
     }
 }
