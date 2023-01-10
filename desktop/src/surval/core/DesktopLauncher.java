@@ -20,6 +20,10 @@ public class DesktopLauncher {
 			TexturePacker.process(settings,
 					"core/assets/sprites/alives/",
 					"core/assets/sprites/atlases/", "alives");
+			// Атлас интерфейса:
+			TexturePacker.process(settings,
+					"core/assets/sprites/ui/",
+					"core/assets/sprites/atlases/", "ui");
 		} catch(Exception ignored) { }
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

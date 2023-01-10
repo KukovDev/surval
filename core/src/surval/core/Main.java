@@ -87,38 +87,4 @@ public class Main extends Game {
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
-
-	// Отрисовать панель разработчика:
-	public static void DrawDevPanel(ShapeRenderer shapeRenderer, SpriteBatch uibatch, OrthographicCamera uicamera,
-									float DeltaTime, Vector2 PlayerPos, Vector2 HoverPos, Vector2 WorldSize) {
-		DrawRectFilled(
-				uicamera.position.x-((uicamera.viewportWidth/2)*uicamera.zoom),
-				uicamera.position.y-((uicamera.viewportHeight/2)*uicamera.zoom),
-				256*uicamera.zoom,
-				uicamera.viewportHeight*uicamera.zoom,
-				new Color(0, 0, 0, .85f), shapeRenderer, uicamera);
-
-		uibatch.begin();
-		float CameraPosX = uicamera.position.x-(uicamera.viewportWidth/2);
-		float CameraPosY = uicamera.position.y+(uicamera.viewportHeight/2);
-
-		AssetsData.PixelFont.draw(uibatch, "<Dev-Panel>",
-				CameraPosX+75, CameraPosY-4);
-
-		AssetsData.PixelFont.draw(uibatch, "FPS: " + GetFPS(),
-				CameraPosX+4, CameraPosY-4*8);
-
-		AssetsData.PixelFont.draw(uibatch, "DeltaTime: " + DeltaTime,
-				CameraPosX+4, CameraPosY-4*12);
-
-		AssetsData.PixelFont.draw(uibatch, "Player Pos: x=" + (int)PlayerPos.x + ", y=" + (int)PlayerPos.y,
-				CameraPosX+4, CameraPosY-4*16);
-
-		AssetsData.PixelFont.draw(uibatch, "Hover Pos: x=" + (int)HoverPos.x + ", y=" + (int)HoverPos.y,
-				CameraPosX+4, CameraPosY-4*20);
-
-		AssetsData.PixelFont.draw(uibatch, "World Size: W=" + (int)WorldSize.x + ", H=" + (int)WorldSize.y,
-				CameraPosX+4, CameraPosY-4*24);
-		uibatch.end();
-	}
 }

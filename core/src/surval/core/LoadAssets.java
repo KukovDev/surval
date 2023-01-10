@@ -15,6 +15,9 @@ public class LoadAssets {
     public TextureAtlas blocks_atlas;
     // Атлас живых существ:
     public TextureAtlas alives_atlas;
+    // Атлас ui:
+    public TextureAtlas ui_atlas;
+
     // Блоки:
     public Array<Sprite> Snow;    // Снежная поверхность.
     public Array<Sprite> Stone;   // Каменная поверхность.
@@ -26,6 +29,9 @@ public class LoadAssets {
     // Шрифты:
     public BitmapFont PixelFont;
 
+    // UI:
+    public Array<Sprite> UI; // Интерфейс.
+
 
     // Функция вызывается автоматически при создании экземпляра этого класса:
     public LoadAssets() {
@@ -33,12 +39,17 @@ public class LoadAssets {
         blocks_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/blocks.atlas"));
         // Атлас живых существ:
         alives_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/alives.atlas"));
+        // Атлас интерфейса:
+        ui_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/ui.atlas"));
+
         // Блоки:
         Snow = new Array<>();
         Stone = new Array<>();
         Bonfire = new Array<>();
         // Живые существа:
         Player = new Array<>();
+        // Интерфейс:
+        UI = new Array<>();
     }
 
     // Загружает ассеты:
@@ -46,18 +57,21 @@ public class LoadAssets {
         LoadBlocks();
         LoadAlives();
         LoadFonts();
+        LoadUI();
     }
 
     // Удаляет всё что было загружено:
     public void AssetsDispose() {
         blocks_atlas.dispose();
         alives_atlas.dispose();
+        ui_atlas.dispose();
         PixelFont.dispose();
 
         Snow.clear();
         Stone.clear();
         Bonfire.clear();
         Player.clear();
+        UI.clear();
 
         System.gc();
     }
@@ -67,12 +81,14 @@ public class LoadAssets {
        Snow.addAll(
                blocks_atlas.createSprite("snow1"),
                blocks_atlas.createSprite("snow2"),
-               blocks_atlas.createSprite("snow3"));
+               blocks_atlas.createSprite("snow3")
+       );
 
        Stone.addAll(
                blocks_atlas.createSprite("stone1"),
                blocks_atlas.createSprite("stone2"),
-               blocks_atlas.createSprite("stone3"));
+               blocks_atlas.createSprite("stone3")
+       );
 
        Bonfire.addAll(
                blocks_atlas.createSprite("bonfire1"),
@@ -84,7 +100,8 @@ public class LoadAssets {
                blocks_atlas.createSprite("bonfire7"),
                blocks_atlas.createSprite("bonfire8"),
                blocks_atlas.createSprite("bonfire new"),
-               blocks_atlas.createSprite("bonfire old"));
+               blocks_atlas.createSprite("bonfire old")
+       );
 
        NullBlock = blocks_atlas.createSprite("nullblock");
     }
@@ -94,7 +111,8 @@ public class LoadAssets {
         Player.addAll(
                 alives_atlas.createSprite("player-stand"),
                 alives_atlas.createSprite("player-run1"),
-                alives_atlas.createSprite("player-run2"));
+                alives_atlas.createSprite("player-run2")
+        );
     }
 
     // Загрузить шрифты:
@@ -103,5 +121,12 @@ public class LoadAssets {
         parameters.size = 12;
         parameters.color = new Color(1f, 1f, 1f, 1f);
         PixelFont = Main.FontUpdateParameters("fonts/pixel.ttf", parameters);
+    }
+
+    // Загрузить интерфейс:
+    void LoadUI() {
+        UI.addAll(
+                ui_atlas.createSprite("hotbar")
+        );
     }
 }

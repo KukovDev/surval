@@ -119,14 +119,16 @@ public class GameScreen implements Screen {
         // Отрисовка ui:
         uibatch.setProjectionMatrix(uicamera.combined);
 
-        // Отрисовать панель разработчика:
-        if(IsVisibleDevPanel)
-            Main.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),
-                    world.GetHoverPos(camera), new Vector2(world.Width, world.Height));
-
         uibatch.begin();
         // Отрисовка интерфейса...
         uibatch.end();
+
+        UI.DrawHotBar(uibatch, uicamera); // Отрисовать горячую панель инвентаря.
+
+        // Отрисовать панель разработчика:
+        if(IsVisibleDevPanel)
+            UI.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),
+                    world.GetHoverPos(camera), new Vector2(world.Width, world.Height));
     }
 
     @Override public void resize(int width, int height) {
