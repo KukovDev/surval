@@ -8,18 +8,28 @@ import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.math.*;
 
 public class UI {
+    public static final int HotBarCells = 8;                          // Кол-во ячеек горячей панели.
+    public static String[] HotBarCellsList = new String[HotBarCells]; // Ресурсы в горячей панели.
+    public static int HotBarTargetCell;                               // Выделение ячейки горячей панели.
+
     // Отрисовать горячую панель инвентаря:
     public static void DrawHotBar(SpriteBatch uibatch, OrthographicCamera uicamera) {
-        float ScaleHotBar = 2f;
-        int Cells = 6;
         uibatch.begin();
-        for(int x=0;x<Cells;x++) {
-            uibatch.draw(Main.AssetsData.UI.get(0),
-                    uicamera.position.x+Main.AssetsData.UI.get(0).getWidth()*ScaleHotBar*x-
-                            Main.AssetsData.UI.get(0).getWidth()*ScaleHotBar*Cells/2,
-                    uicamera.position.y-uicamera.viewportHeight/2,
-                    Main.AssetsData.UI.get(0).getWidth()*ScaleHotBar+1f,
-                    Main.AssetsData.UI.get(0).getHeight()*ScaleHotBar+1f);
+        for(int x=0;x<HotBarCells;x++) {
+            float PosX = uicamera.position.x+48f*x-48f*HotBarCells/2;
+            float PosY = uicamera.position.y-uicamera.viewportHeight/2;
+
+            // Выделение ячейки:
+            if(HotBarTargetCell > HotBarCells-1) HotBarTargetCell = 0;
+            if(HotBarTargetCell < 0) HotBarTargetCell = HotBarCells-1;
+            if(x == HotBarTargetCell) uibatch.draw(Main.AssetsData.UI.get(1), PosX, PosY+48+4f, 48f, 12f);
+
+            uibatch.draw(Main.AssetsData.UI.get(0), PosX, PosY, 48f, 48f); // Отрисовать ячейку.
+
+            try {
+                uibatch.draw(Main.AssetsData.resources.Resources.get(HotBarCellsList[x]),
+                        PosX+8f, PosY+8f, 32f, 32f);
+            } catch(Exception ignored) { }
         }
         uibatch.end();
     }

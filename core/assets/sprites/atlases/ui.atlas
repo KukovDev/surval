@@ -4,10 +4,17 @@ size: 512, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-hotbar
+hotbarcell
   rotate: false
-  xy: 2, 2
+  xy: 2, 9
   size: 20, 20
   orig: 20, 20
+  offset: 0, 0
+  index: -1
+hotbartargetcell
+  rotate: false
+  xy: 2, 2
+  size: 20, 5
+  orig: 20, 5
   offset: 0, 0
   index: -1

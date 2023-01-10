@@ -11,10 +11,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.utils.*;
 
 public class LoadAssets {
+    public Resources resources; // Ресурсы.
+
     // Атлас блоков:
     public TextureAtlas blocks_atlas;
+
     // Атлас живых существ:
     public TextureAtlas alives_atlas;
+
     // Атлас ui:
     public TextureAtlas ui_atlas;
 
@@ -23,6 +27,7 @@ public class LoadAssets {
     public Array<Sprite> Stone;   // Каменная поверхность.
     public Array<Sprite> Bonfire; // Костёр.
     public Sprite NullBlock;      // Неизвестно.
+
     // Живые существа:
     public Array<Sprite> Player; // Игрок.
 
@@ -37,8 +42,10 @@ public class LoadAssets {
     public LoadAssets() {
         // Атлас блоков:
         blocks_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/blocks.atlas"));
+
         // Атлас живых существ:
         alives_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/alives.atlas"));
+
         // Атлас интерфейса:
         ui_atlas = new TextureAtlas(Gdx.files.internal("sprites/atlases/ui.atlas"));
 
@@ -46,8 +53,10 @@ public class LoadAssets {
         Snow = new Array<>();
         Stone = new Array<>();
         Bonfire = new Array<>();
+
         // Живые существа:
         Player = new Array<>();
+
         // Интерфейс:
         UI = new Array<>();
     }
@@ -58,6 +67,8 @@ public class LoadAssets {
         LoadAlives();
         LoadFonts();
         LoadUI();
+
+        resources = new Resources(); // Ресурсы.
     }
 
     // Удаляет всё что было загружено:
@@ -66,6 +77,7 @@ public class LoadAssets {
         alives_atlas.dispose();
         ui_atlas.dispose();
         PixelFont.dispose();
+        resources.dispose();
 
         Snow.clear();
         Stone.clear();
@@ -118,7 +130,7 @@ public class LoadAssets {
     // Загрузить шрифты:
     void LoadFonts() {
         FreeTypeFontGenerator.FreeTypeFontParameter parameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameters.size = 12;
+        parameters.size = 14;
         parameters.color = new Color(1f, 1f, 1f, 1f);
         PixelFont = Main.FontUpdateParameters("fonts/pixel.ttf", parameters);
     }
@@ -126,7 +138,8 @@ public class LoadAssets {
     // Загрузить интерфейс:
     void LoadUI() {
         UI.addAll(
-                ui_atlas.createSprite("hotbar")
+                ui_atlas.createSprite("hotbarcell"),
+                ui_atlas.createSprite("hotbartargetcell")
         );
     }
 }

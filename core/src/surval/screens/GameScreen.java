@@ -57,14 +57,27 @@ public class GameScreen implements Screen {
         camera.position.x = alives.get(0).Pos.x; camera.position.y = alives.get(0).Pos.y;
 
         shapeRenderer = new ShapeRenderer();
+
+        UI.HotBarCellsList[0] = Main.AssetsData.resources.Bonfire;
+        UI.HotBarCellsList[1] = Main.AssetsData.resources.NullRes;
+        UI.HotBarCellsList[2] = Main.AssetsData.resources.Stoneland;
+        UI.HotBarCellsList[3] = Main.AssetsData.resources.Snowland;
     }
 
     // Тут вся логика:
     public void Update() {
-        // Если нажимается CTRL или SYM, и английская 'P', показать панель разработчика. Если нажата ESC, скрыть:
+        // Если нажата клавиша CTRL или SYM, и английская 'P', показать панель разработчика. Если нажата ESC, скрыть:
         if((Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SYM)) &&
             Gdx.input.isKeyPressed(Input.Keys.P))          { IsVisibleDevPanel = true;  }
         else if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) { IsVisibleDevPanel = false; }
+
+        // Если нажата клавиша CTRL или SYM, менять выбранный ресурс в горячей панели:
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SYM)) {
+            UI.HotBarTargetCell += InputProcess.scroll;
+            Main.GetScroll();
+        } else { // Иначе масштабировать камеру:
+            CameraZoomTarget += Main.GetScroll() / 4;
+        }
 
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {
@@ -74,23 +87,26 @@ public class GameScreen implements Screen {
         }
 
         // TODO переделать -> перенести в отдельный обработчик работы с блоками и сделать поддержку сенсорного экрана:
-        // Установить блок правой кнопкой мыши:
+        // Установить блок левой кнопкой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.LEFT) {
             Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
-            Block block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
+            Block block;
+
+            if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Bonfire))
+                block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
+            else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Snowland))
+                block = new SnowLandBlock((int)hoverpos.x, (int)hoverpos.y);
+            else block = new NullBlock((int)hoverpos.x, (int)hoverpos.y);
+
             try {
-                if(!Objects.equals(world.BlockList[(int) hoverpos.x][(int) hoverpos.y].ID, block.ID)) {
-                    world.SetBlock(block, hoverpos);
-                }
+                world.SetBlock(block, hoverpos);
             } catch(Exception ignored) { }
         }
-        // Установить блок правой левой мыши:
+        // Удалить блок правой кнопкой мыши:
         if(InputProcess.touchdownbutton == Input.Buttons.RIGHT) {
             Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
             try {
-                if(world.BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
-                    world.BreakBlock(hoverpos);
-                }
+                world.BreakBlock(hoverpos);
             } catch(Exception ignored) { }
         }
     }
@@ -168,7 +184,6 @@ public class GameScreen implements Screen {
         camera.position.y += ((CameraTarget.y - camera.position.y) * CameraMoveSpeed) * DeltaTime;
 
         // Зум камеры:
-        CameraZoomTarget += Main.GetScroll() / 4;
         camera.zoom += ((CameraZoomTarget - camera.zoom) * CameraZoomSpeed) * DeltaTime;
 
         // Установить ограничение масштабирования камеры:

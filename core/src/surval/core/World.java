@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
 import surval.blocks.*;
 
+import java.util.Objects;
+
 public class World {
     public Block[][] BlockList; // Список блоков.
     public int Width;           // Ширина карты.
@@ -96,14 +98,22 @@ public class World {
 
     // Установить блок:
     public void SetBlock(Block block, Vector2 hoverpos) {
-        block.BackgroundBlock = BlockList[(int)hoverpos.x][(int)hoverpos.y];
-        BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
+        while(BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
+            BreakBlock(hoverpos);
+        }
+
+        if(!Objects.equals(BlockList[(int)hoverpos.x][(int)hoverpos.y].ID, block.ID)) {
+            block.BackgroundBlock = BlockList[(int) hoverpos.x][(int) hoverpos.y];
+            BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
+        }
     }
 
     // Удалить блок:
     public void BreakBlock(Vector2 hoverpos) {
-        Block bgblock = BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock;
-        BlockList[(int)hoverpos.x][(int)hoverpos.y] = null;
-        BlockList[(int)hoverpos.x][(int)hoverpos.y] = bgblock;
+        if(BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
+            Block bgblock = BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock;
+            BlockList[(int)hoverpos.x][(int)hoverpos.y] = null;
+            BlockList[(int)hoverpos.x][(int)hoverpos.y] = bgblock;
+        }
     }
 }
