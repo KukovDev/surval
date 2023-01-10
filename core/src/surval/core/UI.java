@@ -2,17 +2,16 @@
 
 package surval.core;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.*;
+import com.badlogic.gdx.math.*;
 
 public class UI {
     // Отрисовать горячую панель инвентаря:
     public static void DrawHotBar(SpriteBatch uibatch, OrthographicCamera uicamera) {
         float ScaleHotBar = 2f;
-        int Cells = 24;
+        int Cells = 6;
         uibatch.begin();
         for(int x=0;x<Cells;x++) {
             uibatch.draw(Main.AssetsData.UI.get(0),

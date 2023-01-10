@@ -118,13 +118,7 @@ public class GameScreen implements Screen {
 
         // Отрисовка ui:
         uibatch.setProjectionMatrix(uicamera.combined);
-
-        uibatch.begin();
-        // Отрисовка интерфейса...
-        uibatch.end();
-
         UI.DrawHotBar(uibatch, uicamera); // Отрисовать горячую панель инвентаря.
-
         // Отрисовать панель разработчика:
         if(IsVisibleDevPanel)
             UI.DrawDevPanel(shapeRenderer, uibatch, uicamera, DeltaTime, world.GetAlivePos(alives.get(0).Pos),

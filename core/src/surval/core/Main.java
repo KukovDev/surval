@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.input.*;
-import com.badlogic.gdx.math.*;
 import surval.screens.*;
 
 public class Main extends Game {
