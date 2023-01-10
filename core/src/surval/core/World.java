@@ -28,14 +28,24 @@ public class World {
     public void Generate() {
         for(int x=0;x<Width;x++) {
             for(int y=0;y<Height;y++) {
-                BlockList[x][y] = new SnowLandBlock(x, y); // Добавить блок.
+                BlockList[x][y] = new SnowlandBlock(x, y); // Добавить блок.
             }
         }
     }
 
-    // TODO оптимизировать! вывести в отдельный поток.
-    // Функция отрисовки карты:
-    public void Draw(SpriteBatch batch, OrthographicCamera camera, float DeltaTime) {
+    // Обновление блоков на карте (ФУНКЦИЯ ВЫЗЫВАЕТСЯ ИЗ ОТДЕЛЬНОГО ПОТОКА!):
+    // Функция вызывается из -> surval.screens.GameScreen.Update()
+    public void Update(float DeltaTime) {
+        for(int x=0;x<Width;x++) {
+            for (int y=0;y<Height;y++) {
+                BlockList[x][y].Update(DeltaTime);
+            }
+        }
+    }
+
+    // Функция отрисовки карты (ФУНКЦИЯ ВЫЗЫВАЕТСЯ В ОСНОВНОМ ПОТОКЕ!):
+    // Функция вызывается из -> surval.screens.GameScreen.render()
+    public void Draw(SpriteBatch batch, OrthographicCamera camera) {
         for(int x=0;x<Width;x++) {
             for(int y=0;y<Height;y++) {
                 // Проверка на то, видит ли камера, блок:
@@ -45,10 +55,8 @@ public class World {
                         camera.position.y - (camera.viewportHeight * camera.zoom) / 2,
                         camera.viewportWidth * camera.zoom, camera.viewportHeight * camera.zoom);
 
-                if(BlockRect.overlaps(CameraRect)) {
-                    BlockList[x][y].Update(DeltaTime); // TODO убрать это отсюда!
-                    BlockList[x][y].Draw(batch, BlockSize);
-                }
+                // Отрисовать блок:
+                if(BlockRect.overlaps(CameraRect)) BlockList[x][y].Draw(batch, BlockSize);
             }
         }
     }
@@ -98,10 +106,6 @@ public class World {
 
     // Установить блок:
     public void SetBlock(Block block, Vector2 hoverpos) {
-        while(BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
-            BreakBlock(hoverpos);
-        }
-
         if(!Objects.equals(BlockList[(int)hoverpos.x][(int)hoverpos.y].ID, block.ID)) {
             block.BackgroundBlock = BlockList[(int) hoverpos.x][(int) hoverpos.y];
             BlockList[(int)hoverpos.x][(int)hoverpos.y] = block;
@@ -112,7 +116,6 @@ public class World {
     public void BreakBlock(Vector2 hoverpos) {
         if(BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock != null) {
             Block bgblock = BlockList[(int)hoverpos.x][(int)hoverpos.y].BackgroundBlock;
-            BlockList[(int)hoverpos.x][(int)hoverpos.y] = null;
             BlockList[(int)hoverpos.x][(int)hoverpos.y] = bgblock;
         }
     }

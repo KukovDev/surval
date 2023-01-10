@@ -7,10 +7,10 @@ package surval.blocks;
 import com.badlogic.gdx.graphics.g2d.*;
 import surval.core.*;
 
-public class SnowLandBlock extends Block {
+public class SnowlandBlock extends Block {
     public Sprite sprite;
 
-    public SnowLandBlock(int PosX, int PosY) {
+    public SnowlandBlock(int PosX, int PosY) {
         Pos.x = PosX; Pos.y = PosY;
         ID = "snowland";
         sprite = Main.AssetsData.Snow.get((int)(Math.random()*3));

@@ -59,9 +59,9 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
 
         UI.HotBarCellsList[0] = Main.AssetsData.resources.Bonfire;
-        UI.HotBarCellsList[1] = Main.AssetsData.resources.NullRes;
-        UI.HotBarCellsList[2] = Main.AssetsData.resources.Stoneland;
-        UI.HotBarCellsList[3] = Main.AssetsData.resources.Snowland;
+        UI.HotBarCellsList[2] = Main.AssetsData.resources.NullRes;
+        UI.HotBarCellsList[5] = Main.AssetsData.resources.Stoneland;
+        UI.HotBarCellsList[6] = Main.AssetsData.resources.Snowland;
     }
 
     // Тут вся логика:
@@ -79,6 +79,14 @@ public class GameScreen implements Screen {
             CameraZoomTarget += Main.GetScroll() / 4;
         }
 
+        // Обновлять блоки карты в отдельном потоке:
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                world.Update(DeltaTime); // Отрисовка карты.
+            }
+        }).start();
+
         // Проходиться по существам и обновлять их:
         for(Alive alive : alives) {
             alive.Update(DeltaTime);
@@ -92,10 +100,16 @@ public class GameScreen implements Screen {
             Vector2 hoverpos = new Vector2(world.GetHoverPos(camera));
             Block block;
 
+            // Костёр:
             if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Bonfire))
                 block = new BonfireBlock((int)hoverpos.x, (int)hoverpos.y);
+            // Снежная поверхность:
             else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Snowland))
-                block = new SnowLandBlock((int)hoverpos.x, (int)hoverpos.y);
+                block = new SnowlandBlock((int) hoverpos.x, (int) hoverpos.y);
+            // Каменная поверхность:
+            else if(Objects.equals(UI.HotBarCellsList[UI.HotBarTargetCell], Main.AssetsData.resources.Stoneland))
+                block = new StonelandBlock((int)hoverpos.x, (int)hoverpos.y);
+            // Иначе, поставить блок 'null':
             else block = new NullBlock((int)hoverpos.x, (int)hoverpos.y);
 
             try {
@@ -125,7 +139,8 @@ public class GameScreen implements Screen {
         // Отрисовка спрайтов:
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        world.Draw(batch, camera, DeltaTime); // Отрисовка карты.
+        world.Draw(batch, camera); // Отрисовка карты.
+
         // Проходиться по существам и отрисовывать их:
         for(Alive alive : alives) {
             alive.Draw(batch);
